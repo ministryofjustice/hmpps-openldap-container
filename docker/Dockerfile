@@ -1,4 +1,5 @@
-FROM alpine
+# to do: pin to version
+FROM alpine 
 
 RUN apk add openldap openldap-back-mdb openldap-clients bash
 
@@ -7,7 +8,7 @@ RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
 # Removing default configuration
 RUN rm /etc/openldap/slapd.conf
 
-# Importing configuration...
+# to do: add custom configuration from bootstrap
 RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
 RUN chown -R ldap:ldap /etc/openldap/slapd.d/*
 
