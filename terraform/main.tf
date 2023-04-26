@@ -18,6 +18,10 @@ module "container" {
     {
       name  = "SLAPD_LOG_LEVEL"
       value = "trace"
+    },
+    {
+      name  = "LDAP_PORT"
+      value = "389"
     }
   ]
   port_mappings = [{
