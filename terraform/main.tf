@@ -55,6 +55,7 @@ module "deploy" {
   task_exec_policy_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/jitbit-secrets-reader"]
 
   environment = var.environment
+
   # ecs_load_balancers = [
   #   {
   #     target_group_arn = data.aws_lb_target_group.service.arn
