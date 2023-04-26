@@ -33,20 +33,6 @@ module "container" {
       "awslogs-stream-prefix" = "openldap"
     }
   }
-  secrets = [
-    {
-      name      = "ConnectionStrings__DBConnectionString"
-      valueFrom = data.aws_secretsmanager_secret.connection_string.arn
-    },
-    {
-      name      = "AttachmentsS3Login"
-      valueFrom = data.aws_secretsmanager_secret.s3_user_access_key.arn
-    },
-    {
-      name      = "AttachmentsS3Password"
-      valueFrom = data.aws_secretsmanager_secret.s3_user_secret_key.arn
-    }
-  ]
 }
 
 module "deploy" {
