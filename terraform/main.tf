@@ -78,7 +78,6 @@ module "deploy" {
 
   ignore_changes_task_definition = false
 
-  lifecycle = {
-    create_before_destroy = true
-  }
+  force_new_deployment = true
+
 }
