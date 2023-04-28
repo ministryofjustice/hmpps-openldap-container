@@ -77,4 +77,5 @@ module "deploy" {
   ]
 
   ignore_changes_task_definition = false
+
 }
