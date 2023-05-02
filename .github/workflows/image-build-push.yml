@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@5ca0ffd94ef937b3559a9e1f711672ff90acb296 # v1.7.0
+        uses: aws-actions/configure-aws-credentials@67fbcbb121271f7775d2e7715933280b06314838 # v1.7.0
         with:
           aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
@@ -54,7 +54,7 @@ jobs:
           if terraform apply -auto-approve -var-file=environments/development/terraform.tfvars -var="image_tag=$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')"; then
             echo "TF Apply to deploy to ECS succeeded"
             echo "CLUSTER_ARN=$(terraform output -raw ecs_cluster_arn)" >> $GITHUB_OUTPUT
-            echo "SERVICE_ARN=$(terraform output -raw ecs_service_arn)" >> $GITHUB_OUTPUT
+            echo "SERVICE_ARN=$(terraform output -raw ecs_service_arn)" >> $GITHUB _OUTPUT
             echo "Checking the service is stable next"
             exit 0
           else
