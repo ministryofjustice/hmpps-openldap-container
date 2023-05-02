@@ -50,7 +50,7 @@ module "deploy" {
   network_mode = "awsvpc"
 
   task_cpu    = "1024"
-  task_memory = "3076"
+  task_memory = "4096"
 
   service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-service"
   task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task"
