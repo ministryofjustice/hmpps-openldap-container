@@ -21,7 +21,7 @@ module "container" {
     },
     {
       name  = "LDAP_PORT"
-      value = "389"
+      value = "3890"
     }
   ]
   port_mappings = [{
