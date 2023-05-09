@@ -1,7 +1,7 @@
 # to do: pin to version
 FROM alpine 
 
-RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients bash ca-certificates
+RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients bash ca-certificates curl
 
 RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
 
