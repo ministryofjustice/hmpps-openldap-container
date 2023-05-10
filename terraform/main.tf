@@ -89,8 +89,9 @@ module "deploy" {
 
   efs_volumes = [
     {
-      name = "delius-core-openldap"
-      efs_volume_configuration = {
+      host_path = null
+      name      = "delius-core-openldap"
+      efs_volume_configuration = [{
         file_system_id          = data.aws_efs_file_system.openldap.id
         root_directory          = "/"
         transit_encryption      = "ENABLED"
@@ -99,7 +100,7 @@ module "deploy" {
           access_point_id = "fsap-01645c63192bbfd04"
           iam             = "DISABLED"
         }
-      }
+      }]
     }
   ]
 
