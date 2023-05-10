@@ -85,7 +85,7 @@ module "deploy" {
   efs_volumes = [
     {
       host_path = "/var/lib/ldap"
-      name      = local.app_name
+      name      = "delius-core-openldap"
       efs_volume_configuration = {
         file_system_id          = data.aws_efs_file_system.openldap.id
         root_directory          = "/"
