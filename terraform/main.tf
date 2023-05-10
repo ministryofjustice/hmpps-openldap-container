@@ -30,6 +30,11 @@ module "container" {
       valueFrom = data.aws_secretsmanager_secret.bind_password.arn
     }
   ]
+  mount_points = [{
+    sourceVolume  = "delius-core-openldap"
+    containerPath = "/var/lib/ldap"
+    readOnly      = false
+  }]
   port_mappings = [{
     containerPort = 389
     hostPort      = 389
@@ -84,7 +89,7 @@ module "deploy" {
 
   efs_volumes = [
     {
-      host_path = "/var/lib/ldap"
+      host_path = null
       name      = "delius-core-openldap"
       efs_volume_configuration = {
         file_system_id          = data.aws_efs_file_system.openldap.id
