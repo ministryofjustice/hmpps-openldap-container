@@ -2,7 +2,7 @@ locals {
   app_name = "delius-core-openldap"
 }
 
-module "container" {
+module "container_a" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.58.1"
   container_name           = local.app_name
   container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:${var.image_tag}"
@@ -22,6 +22,10 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "3890"
+    },
+    {
+      name  = "other_masters"
+      value = "ldap-b.private.zone.local,ldap-c.private.zone.local"
     }
   ]
   port_mappings = [{
@@ -39,8 +43,8 @@ module "container" {
   }
 }
 
-module "deploy" {
-  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=v1.0.1"
+module "deploy_a" {
+  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=5f488ac0de669f53e8283fff5bcedf5635034fe1"
   container_definition_json = module.container.json_map_encoded_list
   ecs_cluster_arn           = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/hmpps-${var.environment}-${local.app_name}"
   name                      = local.app_name
@@ -75,6 +79,8 @@ module "deploy" {
     data.aws_subnet.private_subnets_b.id,
     data.aws_subnet.private_subnets_c.id
   ]
+
+  exec_enabled = true
 
   ignore_changes_task_definition = false
   redeploy_on_apply              = false
