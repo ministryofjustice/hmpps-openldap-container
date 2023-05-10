@@ -96,10 +96,10 @@ module "deploy" {
         root_directory          = "/"
         transit_encryption      = "ENABLED"
         transit_encryption_port = 2049
-        authorization_config = {
+        authorization_config = [{
           access_point_id = "fsap-01645c63192bbfd04"
           iam             = "DISABLED"
-        }
+        }]
       }]
     }
   ]
