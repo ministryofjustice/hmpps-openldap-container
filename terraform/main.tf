@@ -92,7 +92,7 @@ module "deploy" {
       host_path = null
       name      = "delius-core-openldap"
       efs_volume_configuration = [{
-        file_system_id          = data.aws_efs_file_system.openldap.id
+        file_system_id          = "fs-0f1238d10620ba18e"
         root_directory          = "/"
         transit_encryption      = "ENABLED"
         transit_encryption_port = 2049
