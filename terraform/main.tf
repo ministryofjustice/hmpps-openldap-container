@@ -99,7 +99,6 @@ module "deploy" {
         authorization_config = [{
           access_point_id = "fsap-01645c63192bbfd04"
           iam             = "DISABLED"
-        }]
       }]
     }
   ]
