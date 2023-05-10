@@ -6,7 +6,7 @@ RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor
 RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
 
 # Removing default db
-RUN rm /etc/openldap/slapd.d/cn=config/olcDatabase={2}hdb.ldif
+# RUN rm /etc/openldap/slapd.d/cn=config/olcDatabase={2}hdb.ldif
 
 COPY slapd /bootstrap/
 
