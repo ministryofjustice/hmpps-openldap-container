@@ -22,32 +22,12 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "389"
-    },
-    {
-      name  = "other_masters"
-      value = "ldap-b.private.zone.local,ldap-c.private.zone.local"
     }
   ]
   secrets = [
     {
       name      = "BIND_PASSWORD"
       valueFrom = data.aws_secretsmanager_secret.bind_password.arn
-    }
-  ]
-  volumes = [
-    {
-      name = "efs-mdb"
-      efsVolumeConfiguration = {
-        fileSystemId      = data.aws_efs_file_system.openldap.id
-        transitEncryption = "ENABLED"
-      }
-    }
-  ]
-  mount_points = [
-    {
-      sourceVolume  = "efs-mdb"
-      containerPath = "/var/lib/ldap"
-      readOnly      = false
     }
   ]
   port_mappings = [{
@@ -100,6 +80,23 @@ module "deploy" {
     data.aws_subnet.private_subnets_a.id,
     data.aws_subnet.private_subnets_b.id,
     data.aws_subnet.private_subnets_c.id
+  ]
+
+  efs_volumes = [
+    {
+      host_path = "/var/lib/ldap"
+      name      = local.app_name
+      efs_volume_configuration = {
+        file_system_id          = data.aws_efs_file_system.openldap.id
+        root_directory          = "/"
+        transit_encryption      = "ENABLED"
+        transit_encryption_port = 2049
+        authorization_config = {
+          access_point_id = "fsap-01645c63192bbfd04"
+          iam             = "DISABLED"
+        }
+      }
+    }
   ]
 
   exec_enabled = true
