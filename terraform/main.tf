@@ -28,6 +28,12 @@ module "container" {
       value = "ldap-b.private.zone.local,ldap-c.private.zone.local"
     }
   ]
+  secrets = [
+    {
+      name      = "BIND_PASSWORD"
+      valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+    }
+  ]
   port_mappings = [{
     containerPort = 389
     hostPort      = 389

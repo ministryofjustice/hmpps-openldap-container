@@ -25,3 +25,8 @@ data "aws_subnet" "private_subnets_c" {
 # data "aws_lb_target_group" "service" {
 #   name = var.target_group_name
 # }
+
+
+data "aws_secretsmanager_secret" "bind_password" {
+  name = "${local.app_name}-openldap-bind-password"
+}

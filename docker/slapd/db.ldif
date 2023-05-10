@@ -1,0 +1,22 @@
+dn: olcDatabase={2}mdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcMdbConfig
+olcDatabase: {2}mdb
+olcDbDirectory: /var/lib/ldap/data.mdb
+olcSuffix:dc=example,dc=com
+olcAccess: {0}to *
+  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" write
+  by dn="cn=admin,dc=moj,dc=com" write
+  by dn="cn=pwm-admin,ou=Users,dc=moj,dc=com" write
+  by self write
+  by anonymous auth
+  by * read
+olcRootDN: cn=root,dc=example,dc=com
+olcRootPW: admin
+olcTimeLimit: time.soft=3600 time.hard=7200
+olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
+olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres
+olcDbIndex: entryCSN eq
+olcDbMaxSize: 10485760
+olcDbNosync: TRUE
+olcDbCheckpoint: 1024 1
