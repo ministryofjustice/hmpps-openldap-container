@@ -21,7 +21,7 @@ module "container" {
     },
     {
       name  = "LDAP_PORT"
-      value = "3890"
+      value = "389"
     },
     {
       name  = "other_masters"
@@ -32,6 +32,22 @@ module "container" {
     {
       name      = "BIND_PASSWORD"
       valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+    }
+  ]
+  volumes = [
+    {
+      name = "efs-mdb"
+      efsVolumeConfiguration = {
+        fileSystemId      = data.aws_efs_file_system.openldap.id
+        transitEncryption = "ENABLED"
+      }
+    }
+  ]
+  mount_points = [
+    {
+      sourceVolume  = "efs-mdb"
+      containerPath = "/var/lib/ldap"
+      readOnly      = false
     }
   ]
   port_mappings = [{
