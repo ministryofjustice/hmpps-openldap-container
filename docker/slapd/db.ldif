@@ -13,7 +13,7 @@ olcAccess: {0}to *
   by anonymous auth
   by * read
 olcRootDN: cn=root,dc=moj,dc=com
-olcRootPW: **HASHEDPASSWORD**
+olcRootPW: HASHEDPASSWORD
 olcTimeLimit: time.soft=3600 time.hard=7200
 olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
 olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres

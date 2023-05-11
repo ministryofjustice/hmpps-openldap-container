@@ -3,7 +3,7 @@ set -e
 echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
 if [[ -v ECS_CONTAINER_METADATA_URI ]]; then
-    JSON=$(curl ${ECS_CONTAINER_METADATA_URI}/task)
+    JSON=$(echo curl -s ${ECS_CONTAINER_METADATA_URI}/task)
     IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
     echo $IP
 else
@@ -42,7 +42,7 @@ echo $(ps -eaf)
 HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
 echo $HASHED_BIND_PASSWORD
 # Replace the bind password in the bootstrap ldif files
-sed -i "s_**HASHEDPASSWORD**_${HASHED_BIND_PASSWORD}_g" /bootstrap/db.ldif
+sed -i "s_HASHEDPASSWORD_${HASHED_BIND_PASSWORD}_g" /bootstrap/db.ldif
 
 slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Frun%2Fopenldap%2Fldapi" &
 
