@@ -6,8 +6,14 @@ JSON=$(curl ${ECS_CONTAINER_METADATA_URI}/task)
 IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
 echo $IP
 
+# fix perms
+chown -R openldap:openldap /var/run/slapd
+chown -R openldap:openldap /var/lib/ldap
+chown -R openldap:openldap /etc/ldap
+chown -R openldap:openldap /etc/openldap/slapd
+
 # start slapd
-slapd -h "ldap://localhost:${LDAP_PORT}/ ldap://${IP}:${LDAP_PORT}/ ldapi:///" -d "${SLAPD_LOG_LEVEL}" -s "${SLAPD_LOG_LEVEL}"
+slapd -h "ldap://localhost:${LDAP_PORT}/ ldap://${IP}:${LDAP_PORT}/ ldapi:///" -d "${SLAPD_LOG_LEVEL}" -s "${SLAPD_LOG_LEVEL}" -u openldap -g openldap
 
 # Hash the bind password
 slappasswd -h {SSHA} -s $BIND_PASSWORD
