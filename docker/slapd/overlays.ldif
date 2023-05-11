@@ -1,12 +1,9 @@
 # Load modules
-dn: cn=module,cn=config
-cn: module
-objectClass: olcModuleList
-olcModulePath: /usr/lib64/openldap
-olcModuleLoad: memberof.la
-olcModuleLoad: refint.la
-olcModuleLoad: ppolicy.la
-olcModuleLoad: syncprov.la
+# dn: cn=module,cn=config
+# cn: module
+# objectClass: olcModuleList
+# olcModulePath: /usr/lib/openldap
+
 
 # Apply memberof overlay for dynamic group membership
 dn: olcOverlay={0}memberof,olcDatabase={2}mdb,cn=config
@@ -32,7 +29,7 @@ dn: olcOverlay={2}ppolicy,olcDatabase={2}mdb,cn=config
 objectClass: olcOverlayConfig
 objectClass: olcPPolicyConfig
 olcOverlay: {2}ppolicy
-olcPPolicyDefault: cn=default,ou=Policies,{{ base_root }}
+olcPPolicyDefault: cn=default,ou=Policies,dc=moj,dc=com
 olcPPolicyHashCleartext: TRUE
 olcPPolicyUseLockout: TRUE
 olcPPolicyForwardUpdates: TRUE

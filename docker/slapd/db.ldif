@@ -1,9 +1,10 @@
+# db config
 dn: olcDatabase={2}mdb,cn=config
 objectClass: olcDatabaseConfig
 objectClass: olcMdbConfig
 olcDatabase: {2}mdb
-olcDbDirectory: /var/lib/ldap/data.mdb
-olcSuffix:dc=example,dc=com
+olcDbDirectory: /var/lib/openldap/openldap-data/
+olcSuffix: dc=moj,dc=com
 olcAccess: {0}to *
   by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" write
   by dn="cn=admin,dc=moj,dc=com" write
@@ -11,8 +12,8 @@ olcAccess: {0}to *
   by self write
   by anonymous auth
   by * read
-olcRootDN: cn=root,dc=example,dc=com
-olcRootPW: admin
+olcRootDN: cn=root,dc=moj,dc=com
+olcRootPW: **HASHEDPASSWORD**
 olcTimeLimit: time.soft=3600 time.hard=7200
 olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
 olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres
