@@ -4,6 +4,7 @@ echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
 JSON=$(curl ${ECS_CONTAINER_METADATA_URI}/task)
 IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
+echo $IP
 
 # start slapd
 slapd -h "ldap://localhost:${LDAP_PORT}/ ldap://${IP}:${LDAP_PORT}/ ldapi:///" -d "${SLAPD_LOG_LEVEL}" -s "${SLAPD_LOG_LEVEL}"

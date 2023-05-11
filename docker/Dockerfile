@@ -3,7 +3,8 @@ FROM alpine
 
 RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients bash ca-certificates curl jq git
 
-RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
+# RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
+RUN install -m 755 -d /etc/openldap/slapd.d
 
 # clone rbac repo
 RUN git clone https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac
@@ -15,7 +16,7 @@ COPY slapd /bootstrap/
 
 # to do: add custom configuration from bootstrap
 RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
-RUN chown -R ldap:ldap /etc/openldap/slapd.d/*
+# RUN chown -R ldap:ldap /etc/openldap/slapd.d/*
 
 COPY ./entrypoint.sh /entrypoint.sh
 RUN set -ex && chmod +x /entrypoint.sh
