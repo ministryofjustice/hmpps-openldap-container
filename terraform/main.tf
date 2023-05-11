@@ -32,7 +32,7 @@ module "container" {
   ]
   mount_points = [{
     sourceVolume  = "delius-core-openldap"
-    containerPath = "/var/lib/ldap"
+    containerPath = "/var/lib/openldap/openldap-data"
     readOnly      = false
   }]
   port_mappings = [{
