@@ -75,7 +75,6 @@ olcModuleLoad: ppolicy.so
 #olcModuleload: unique.la
 #olcModuleload: valsort.la
 
-
 #
 # Schema settings
 #
