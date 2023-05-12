@@ -54,7 +54,7 @@ jobs:
           if terraform apply -auto-approve -var-file=environments/development/terraform.tfvars -var="image_tag=$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')"; then
             echo "TF Apply to deploy to ECS succeeded"
             echo "CLUSTER_ARN=$(terraform output -raw ecs_cluster_arn)" >> $GITHUB_OUTPUT
-            echo "SERVICE_ARN=$(terraform output -raw ecs_service_arn)" >> $GITHUB _OUTPUT
+            echo "SERVICE_ARN=$(terraform output -raw ecs_service_arn)" >> $GITHUB_OUTPUT
             echo "Checking the service is stable next"
             exit 0
           else
@@ -62,6 +62,9 @@ jobs:
             curl --silent -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"header","text":{"type":"plain_text","text":":fail: *Deployment Failed*"}},{"type":"divider"},{"type":"section","text":{"type":"mrkdwn","text":"TF Apply Failed."},	"accessory": {"type": "button","text": {"type": "plain_text","text": ":github: View Job","emoji": true}, "value": "click_me_123", "url":"${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}", "action_id": "button-action"}}]}' ${{ secrets.SLACK_WEBHOOK_URL }}
             exit 1
           fi
+      - name: Trigger new ECS service deployment
+        if: contains(github.event.head_commit.message, 'ecr_push') || github.ref == 'refs/heads/main'
+        run: aws ecs update-service --cluster ${{ steps.DeployToECS.outputs.CLUSTER_ARN }} --service ${{ steps.DeployToECS.outputs.SERVICE_ARN }} --force-new-deployment
       - name: Ensure service stable
         if: contains(github.event.head_commit.message, 'ecr_push') || github.ref == 'refs/heads/main'
         run: |
