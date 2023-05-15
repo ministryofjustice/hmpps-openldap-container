@@ -11,15 +11,42 @@ else
     echo $IP
 fi
 
+# awk -F: '{ print $1}' /etc/passwd
+
+echo $(ps -eaf)
+
+echo $(printenv)
+mkdir -p /run/openldap/
+
+# if [[ ! -f /etc/openldap/slapd.conf ]]; then
+# 	touch /etc/openldap/slapd.conf
+# fi
+
+if [[ ! -f /var/lib/openldap/run/slapd.pid ]]; then
+    mkdir -p /var/lib/openldap/run
+	touch /var/lib/openldap/run/slapd.pid
+fi
+
+# sed -i "s_\.la_\.so_g" /etc/openldap/slapd.conf
+
+echo "Configuring OpenLDAP via slapd.d"
+mkdir -p /etc/openldap/slapd.d
+chmod -R 750 /etc/openldap/slapd.d
+mkdir -p /var/lib/openldap/openldap-data
+chmod -R 750 /var/lib/openldap/openldap-data
+
+
+echo $(ps -eaf)
+
 # Hash the bind password
 HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
+echo $HASHED_BIND_PASSWORD
 # Replace the bind password in the bootstrap ldif files
 sed -i "s_HASHEDPASSWORD_${HASHED_BIND_PASSWORD}_g" /bootstrap/db.ldif
 
-# Start slapd in the background
 slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Frun%2Fopenldap%2Fldapi" &
 
-# Wait for slapd to start by continually trying to connect to it
+echo $(ps)
 echo "Waiting for OpenLDAP to start"
 while true; do
     sleep 0.1
@@ -27,7 +54,6 @@ while true; do
     ldapsearch -x -H ldap://${IP}:${LDAP_PORT} -b "" -s base "(objectclass=*)" namingContexts > /dev/null 2>&1 && break
 done
 
-# Load the bootstrap schemas
 echo "Loading bootstrap default schemas"
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Frun%2Fopenldap%2Fldapi -f /etc/openldap/schema/cosine.ldif
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Frun%2Fopenldap%2Fldapi -f /etc/openldap/schema/nis.ldif
@@ -49,7 +75,6 @@ ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Frun%2Fopenldap%2Fldapi -f /rbac/schemas/
 
 kill $(cat /var/run/openldap/slapd.pid)
 
-# Wait for slapd to stop
 echo "Waiting for OpenLDAP to stop"
 while true; do
     sleep 0.1
@@ -61,5 +86,4 @@ while true; do
     fi
 done
 
-# Replace this shell session with slapd so that it is PID 1
 exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Frun%2Fopenldap%2Fldapi" -d $SLAPD_LOG_LEVEL
