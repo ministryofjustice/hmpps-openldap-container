@@ -5,6 +5,7 @@ RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor
 
 # RUN install -m 755 -o ldap -g ldap -d /etc/openldap/slapd.d
 RUN install -m 755 -d -o ldap -g ldap /etc/openldap/slapd.d && install -m 755 -o ldap -g ldap -d /var/lib/openldap/run && install -m 750 -o ldap -g ldap -d /var/lib/openldap/openldap-data
+
 RUN rm /etc/openldap/slapd.conf /etc/openldap/slapd.ldif
 RUN touch /var/lib/openldap/run/slapd.pid
 COPY initial_config/slapd.ldif /etc/openldap/slapd.ldif
