@@ -12,7 +12,7 @@ COPY initial_config/slapd.ldif /etc/openldap/slapd.ldif
 
 COPY delius_config /bootstrap/
 # clone rbac repo
-RUN git clone https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac && apk delete git && chown -R ldap:ldap /bootstrap /rbac
+RUN git clone https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac && apk del git && chown -R ldap:ldap /bootstrap /rbac
 
 RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
 
