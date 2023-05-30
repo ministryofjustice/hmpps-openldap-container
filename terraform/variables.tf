@@ -8,6 +8,11 @@ variable "environment" {
   description = "Environment name"
 }
 
+variable "target_group_name" {
+  type        = string
+  description = "Name of the target group to register the service with"
+}
+
 variable "image_tag" {
   type        = string
   default     = "latest"

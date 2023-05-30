@@ -19,6 +19,7 @@ RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
 COPY ./entrypoint.sh /entrypoint.sh
 RUN set -ex && chmod +x /entrypoint.sh
 
-EXPOSE 389
+EXPOSE 389/tcp
+EXPOSE 389/udp
 
 ENTRYPOINT ["bash", "/entrypoint.sh"]

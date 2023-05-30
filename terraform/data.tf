@@ -22,17 +22,11 @@ data "aws_subnet" "private_subnets_c" {
   }
 }
 
-# data "aws_lb_target_group" "service" {
-#   name = var.target_group_name
-# }
+data "aws_lb_target_group" "service" {
+  name = var.target_group_name
+}
 
 
 data "aws_secretsmanager_secret" "bind_password" {
   name = "${local.app_name}-bind-password"
 }
-
-# data "aws_efs_file_system" "openldap" {
-#   tags = {
-#     Name = "${local.app_name}"
-#   }
-# }
