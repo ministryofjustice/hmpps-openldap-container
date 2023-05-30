@@ -2,15 +2,17 @@ set -e
 
 echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
-if [[ -v ECS_CONTAINER_METADATA_URI ]]; then
-    JSON=$(echo curl -s ${ECS_CONTAINER_METADATA_URI}/task)
-    IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
-    echo $IP
-else
-    IP="127.0.0.1"
-    echo $IP
-fi
+# if [[ -v ECS_CONTAINER_METADATA_URI ]]; then
+#     JSON=$(echo curl -s ${ECS_CONTAINER_METADATA_URI}/task)
+#     IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
+#     echo $IP
+# else
+#     IP="127.0.0.1"
+#     echo $IP
+# fi
 
+IP=$LDAP_HOST
+echo "will server on ${IP}"
 # Hash the bind password
 HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
 # Replace the bind password in the bootstrap ldif files
@@ -61,5 +63,6 @@ while true; do
     fi
 done
 
+echo "about to start slapd"
 # Replace this shell session with slapd so that it is PID 1
 exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Frun%2Fopenldap%2Fldapi" -d $SLAPD_LOG_LEVEL
