@@ -19,7 +19,7 @@ HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
 sed -i "s_HASHEDPASSWORD_${HASHED_BIND_PASSWORD}_g" /bootstrap/db.ldif
 
 # Start slapd in the background
-slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Frun%2Fopenldap%2Fldapi" &
+slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" &
 
 # Wait for slapd to start by continually trying to connect to it
 echo "Waiting for OpenLDAP to start"
