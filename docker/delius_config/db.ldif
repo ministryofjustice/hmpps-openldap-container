@@ -14,10 +14,10 @@ olcAccess: {0}to *
   by * read
 olcRootDN: cn=root,dc=moj,dc=com
 olcRootPW: HASHEDPASSWORD
-olcTimeLimit: time.soft=3600 time.hard=7200
+olcTimeLimit: time.soft=30 time.hard=30
 olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
 olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres
 olcDbIndex: entryCSN eq
-olcDbMaxSize: 10485760
+olcDbMaxSize: 16106127360
 olcDbNosync: TRUE
 olcDbCheckpoint: 1024 1
