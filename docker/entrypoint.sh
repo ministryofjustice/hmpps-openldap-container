@@ -29,25 +29,38 @@ while true; do
     ldapsearch -x -H ldap://${IP}:${LDAP_PORT} -b "" -s base "(objectclass=*)" namingContexts > /dev/null 2>&1 && break
 done
 
-echo "Loading bootstrap ldif file 1"
-ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
-echo "Loading bootstrap ldif file 2"
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
 
-# Load the bootstrap schemas
-echo "Loading bootstrap default schemas"
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif
+if ldapsearch -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -b "ou=Users,dc=moj,dc=com" -s SUB "(objectclass=person)" | grep -q 'numEntries:'; then
+    LDAP_EMPTY=0
+else
+    LDAP_EMPTY=1
+    echo "OpenLDAP is empty. will restore from backup file after slapd stops"
+fi
 
-# Load the bootstrap ldif files
-echo "Loading bootstrap ldif file 3"
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
+if [[ $LDAP_EMPTY -eq 1 ]]; then
+    echo "OpenLDAP is empty. loading bootstrap files"
+    echo "Loading bootstrap ldif file 1"
+    ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
+    echo "Loading bootstrap ldif file 2"
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
 
-# load the delius rbac ldif files
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
-ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
+    # Load the bootstrap schemas
+    echo "Loading bootstrap default schemas"
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif
+
+    # Load the bootstrap ldif files
+    echo "Loading bootstrap ldif file 3"
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
+
+    # load the delius rbac ldif files
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
+    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
+fi
+
+echo "schemas loaded"
 
 kill $(cat /var/run/openldap/slapd.pid)
 
@@ -56,12 +69,17 @@ echo "Waiting for OpenLDAP to stop"
 while true; do
     sleep 0.1
     if ldapsearch -x -H ldap://${IP}:${LDAP_PORT} -b "" -s base "(objectclass=*)" namingContexts > /dev/null 2>&1; then
-        echo "OpenLDAP is running"
+        echo "OpenLDAP is running"       
     else
         echo "OpenLDAP is not running"
         break
     fi
 done
+
+if [[ $LDAP_EMPTY -eq 1 ]]; then
+    echo "Loading backup ldif file"
+    slapadd -n 2 -F /etc/openldap/slapd.d -l /backup.ldif
+fi
 
 echo "about to start slapd"
 # Replace this shell session with slapd so that it is PID 1
