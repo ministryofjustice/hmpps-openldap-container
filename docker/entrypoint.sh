@@ -29,7 +29,7 @@ else
     echo "mdb file is present. will not restore from backup file"
 fi
 
-echo "LDAP EMPTY TEST RESULT: ${LDAP_EMPTY}"
+echo "LDAP_EMPTY RESULT: ${LDAP_EMPTY}"
 
 # if [ "$LDAP_EMPTY" == "true" ]; then
     echo "OpenLDAP is empty. loading bootstrap files"
