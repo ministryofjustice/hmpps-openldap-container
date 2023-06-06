@@ -29,15 +29,17 @@ while true; do
     ldapsearch -x -H ldap://${IP}:${LDAP_PORT} -b "" -s base "(objectclass=*)" namingContexts > /dev/null 2>&1 && break
 done
 
-
-if ldapsearch -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -b "ou=Users,dc=moj,dc=com" -s SUB "(objectclass=person)" | grep -q 'numEntries:'; then
-    LDAP_EMPTY=0
-else
-    LDAP_EMPTY=1
+if [ ! -f /var/lib/openldap/openldap-data/data.mdb ]; then
+    LDAP_EMPTY="true"
     echo "OpenLDAP is empty. will restore from backup file after slapd stops"
+else
+    LDAP_EMPTY="false"
+    echo "mdb file is present. will not restore from backup file"
 fi
 
-if [[ $LDAP_EMPTY -eq 1 ]]; then
+echo "LDAP EMPTY TEST RESULT: ${LDAP_EMPTY}"
+
+# if [ "$LDAP_EMPTY" == "true" ]; then
     echo "OpenLDAP is empty. loading bootstrap files"
     echo "Loading bootstrap ldif file 1"
     ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
@@ -58,7 +60,7 @@ if [[ $LDAP_EMPTY -eq 1 ]]; then
     # load the delius rbac ldif files
     ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
     ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
-fi
+# fi
 
 echo "schemas loaded"
 
@@ -76,7 +78,7 @@ while true; do
     fi
 done
 
-if [[ $LDAP_EMPTY -eq 1 ]]; then
+if [ "$LDAP_EMPTY" == "true" ]; then
     echo "Loading backup ldif file"
     slapadd -n 2 -F /etc/openldap/slapd.d -l /backup.ldif
 fi
