@@ -17,7 +17,7 @@ module "container" {
     },
     {
       name  = "SLAPD_LOG_LEVEL"
-      value = "trace"
+      value = "-1"
     },
     {
       name  = "LDAP_PORT"
