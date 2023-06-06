@@ -2,14 +2,6 @@ set -e
 
 echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
-# if [[ -v ECS_CONTAINER_METADATA_URI ]]; then
-#     JSON=$(echo curl -s ${ECS_CONTAINER_METADATA_URI}/task)
-#     IP=$($JSON | jq -r '.Containers[0].Networks[0].IPv4Addresses[0]')
-#     echo $IP
-# else
-#     IP="127.0.0.1"
-#     echo $IP
-# fi
 
 IP=$LDAP_HOST
 echo "will server on ${IP}"
