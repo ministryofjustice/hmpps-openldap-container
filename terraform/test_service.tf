@@ -32,7 +32,7 @@ module "deploy_test" {
   source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=5f488ac0de669f53e8283fff5bcedf5635034fe1"
   container_definition_json = module.container_test.json_map_encoded_list
   ecs_cluster_arn           = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/hmpps-${var.environment}-${local.app_name}"
-  name                      = ldap_test
+  name                      = "ldap_test"
   vpc_id                    = var.vpc_id
 
   launch_type  = "FARGATE"
