@@ -34,6 +34,7 @@ module "deploy_test" {
   ecs_cluster_arn           = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/hmpps-${var.environment}-${local.app_name}"
   name                      = "ldap_test"
   vpc_id                    = var.vpc_id
+  desired_count             = 5
 
   launch_type  = "FARGATE"
   network_mode = "awsvpc"
