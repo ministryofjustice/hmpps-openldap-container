@@ -21,7 +21,7 @@ module "container_test" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group"         = aws_cloudwatch_log_group.ldap_test.name
+      "awslogs-group"         = "/ecs/ldap_test"
       "awslogs-region"        = data.aws_region.current.name
       "awslogs-stream-prefix" = "test"
     }
@@ -63,10 +63,4 @@ module "deploy_test" {
   ignore_changes_task_definition = false
   redeploy_on_apply              = false
   force_new_deployment           = false
-}
-
-
-resource "aws_cloudwatch_log_group" "ldap_test" {
-  name              = "/ecs/ldap_test"
-  retention_in_days = 7
 }
