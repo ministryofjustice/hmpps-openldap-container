@@ -1,8 +1,4 @@
-locals {
-  app_name = "delius-core-openldap"
-}
-
-module "container_test" {
+smodule "container_test" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.59.0"
   container_name           = local.app_name
   container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:ldap_test"
