@@ -21,9 +21,9 @@ module "container_test" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group"         = "${local.app_name}-ecs-ldap-test"
+      "awslogs-group"         = "${local.app_name}-ecs"
       "awslogs-region"        = data.aws_region.current.name
-      "awslogs-stream-prefix" = "openldap-test"
+      "awslogs-stream-prefix" = "openldap"
     }
   }
 }
