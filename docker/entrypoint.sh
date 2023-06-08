@@ -31,30 +31,25 @@ fi
 
 echo "LDAP_EMPTY RESULT: ${LDAP_EMPTY}"
 
-# if [ "$LDAP_EMPTY" == "true" ]; then
-    echo "OpenLDAP is empty. loading bootstrap files"
-    echo "Loading bootstrap ldif file 1"
-    ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
-    echo "Loading bootstrap ldif file 2"
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
+echo "OpenLDAP is empty. loading bootstrap files"
+echo "Loading bootstrap ldif file 1"
+ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
+echo "Loading bootstrap ldif file 2"
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
+# Load the bootstrap schemas
+echo "Loading bootstrap default schemas"
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif
+# Load the bootstrap ldif files
+echo "Loading bootstrap ldif file 3"
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
+# load the delius rbac ldif files
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
+ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
 
-    # Load the bootstrap schemas
-    echo "Loading bootstrap default schemas"
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif
-
-    # Load the bootstrap ldif files
-    echo "Loading bootstrap ldif file 3"
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
-
-    # load the delius rbac ldif files
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
-    ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
-# fi
-
-echo "schemas loaded"
+echo "Schemas loaded"
 
 kill $(cat /var/run/openldap/slapd.pid)
 
@@ -71,8 +66,9 @@ while true; do
 done
 
 if [ "$LDAP_EMPTY" == "true" ]; then
-    echo "Loading backup ldif file"
-    slapadd -n 2 -F /etc/openldap/slapd.d -l /backup.ldif
+    echo "Loading backup ldif file from s3"
+    aws s3 cp ${MIGRATION_S3_LOCATION} /seed.ldif
+    slapadd -n 2 -F /etc/openldap/slapd.d -l /seed.ldif
 fi
 
 echo "about to start slapd"

@@ -22,6 +22,10 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "389"
+    },
+    {
+      name  = "MIGRATION_S3_LOCATION"
+      value = "s3://delius-core-development-openldap-migration/test_migration.ldif"
     }
   ]
   secrets = [
