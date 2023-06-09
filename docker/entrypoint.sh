@@ -65,21 +65,32 @@ while true; do
 done
 
 if [ "$LDAP_EMPTY" == "true" ]; then
-    echo "Loading backup ldif file from s3"
-    if aws s3 cp ${MIGRATION_S3_LOCATION} /seed.ldif; then
-        echo "S3 pull succeeded"
-
+    if [ "$LOCAL" == "true" ]; then
+        echo "Loading local seed ldif file"
         echo "Adding seed ldif to ldap tree"
-        slapadd -n 2 -F /etc/openldap/slapd.d -l /seed.ldif
+        slapadd -n 2 -F /etc/openldap/slapd.d -l /local_seed.ldif -v
         echo "Starting slapd with seeded data"
         # Replace this shell session with slapd so that it is PID 1
         exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
     else
-        echo "S3 pull failed"
-        echo "Remove mdb open-ldap data directory to reseed data"
+        echo "Loading backup ldif file from s3"
+        if aws s3 cp ${MIGRATION_S3_LOCATION} /seed.ldif; then
+            echo "S3 pull succeeded"
+
+            echo "Adding seed ldif to ldap tree"
+            slapadd -v -n 2 -F /etc/openldap/slapd.d -l /seed.ldif
+            echo "Starting slapd with seeded data"
+            # Replace this shell session with slapd so that it is PID 1
+            exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
+        else
+            echo "S3 pull failed"
+            echo "Remove mdb open-ldap data directory to reseed data"
+            exit 1
+        fi
     fi
 else
-    echo "LDAP data directory contains an mdb file. Did not seed data."
+    echo "LDAP data directory contains an mdb file. Did not seed data." 
+    echo "Please verify this data is correct"
     echo "about to start slapd"
         # Replace this shell session with slapd so that it is PID 1
     exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
