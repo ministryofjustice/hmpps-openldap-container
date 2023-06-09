@@ -8,7 +8,7 @@ ldap_password = os.getenv("BIND_PASSWORD")
 server = Server(ldap_server, get_info=ALL)
 print("Server: " + ldap_server)
 print("User: " + ldap_user)
-print("ldap server info: " + str(server.info)
+print("ldap server info: " + str(server.info))
 
 
 for i in range(0, 10000000000):
