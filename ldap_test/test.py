@@ -13,7 +13,8 @@ print("ldap server info: " + str(server.info)
 
 for i in range(0, 10000000000):
     print("Run #" + str(i))
-    conn = Connection(server, ldap_user, ldap_password, auto_bind=True, authentication="SIMPLE")
+    conn=Connection(server, ldap_user, ldap_password,
+                    auto_bind=True, authentication="SIMPLE")
     conn.search(
         "ou=Users,dc=moj,dc=com",
         "(objectClass=*)",
