@@ -75,7 +75,7 @@ module "deploy" {
 
   environment = var.environment
 
-  health_check_grace_period_seconds = 900
+  health_check_grace_period_seconds = 2700
 
   ecs_load_balancers = [
     {
