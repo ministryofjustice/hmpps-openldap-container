@@ -11,6 +11,10 @@ module "container_test" {
     {
       name  = "LDAP_SERVER"
       value = "delius-core-openldap-nlb-031548f823b8589d.elb.eu-west-2.amazonaws.com"
+    },
+    {
+      name  = "ECS_IMAGE_PULL_BEHAVIOR"
+      value = "always"
     }
   ]
   secrets = [
