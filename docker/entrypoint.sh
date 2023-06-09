@@ -82,4 +82,5 @@ else
     echo "LDAP data directory contains an mdb file. Did not seed data."
     echo "about to start slapd"
         # Replace this shell session with slapd so that it is PID 1
-        exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
+    exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
+fi
