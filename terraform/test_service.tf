@@ -28,7 +28,7 @@ module "container_test" {
     options = {
       "awslogs-group"         = "/ecs/ldap_test"
       "awslogs-region"        = data.aws_region.current.name
-      "awslogs-stream-prefix" = "test"
+      "awslogs-stream-prefix" = "ldap_test"
     }
   }
 }
