@@ -75,6 +75,8 @@ module "deploy" {
 
   environment = var.environment
 
+  health_check_grace_period_seconds = 900
+
   ecs_load_balancers = [
     {
       target_group_arn = data.aws_lb_target_group.service.arn
