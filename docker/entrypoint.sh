@@ -31,7 +31,6 @@ fi
 
 echo "LDAP_EMPTY RESULT: ${LDAP_EMPTY}"
 
-echo "OpenLDAP is empty. loading bootstrap files"
 echo "Loading bootstrap ldif file 1"
 ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
 echo "Loading bootstrap ldif file 2"
