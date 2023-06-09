@@ -48,9 +48,8 @@ jobs:
       ############# testing #############
 
       - name: Docker build
-        run: |
         if: contains(github.event.head_commit.message, 'test_container') || github.ref == 'refs/heads/main'
-            docker build --no-cache -t ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:ldap_test ./ldap_test
+        run: docker build --no-cache -t ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:ldap_test ./ldap_test
 
       - name: Docker login
         if: contains(github.event.head_commit.message, 'test_container') || github.ref == 'refs/heads/main'
