@@ -21,7 +21,7 @@ for i in range(0, 10000000000):
     conn = Connection(server, ldap_user, ldap_password, auto_bind=True, authentication="SIMPLE")
     conn.search(
         "ou=Users,dc=moj,dc=com",
-        "(&(cn=" + random.choice(user_list) + "*))(objectClass=person))",
+        "(&(cn=" + random.choice(user_list) + "*)(objectClass=person))",
         search_scope=SUBTREE,
         attributes=["*"],
     )
