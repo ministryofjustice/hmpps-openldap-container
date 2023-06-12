@@ -3,19 +3,23 @@ import random
 import os
 import time
 
-ldap_server = os.getenv("LDAP_SERVER")
+ldap_server = "ldap://localhost"
 ldap_user = "cn=root,dc=moj,dc=com"
-ldap_password = os.getenv("BIND_PASSWORD")
+ldap_password = "password"
 server = Server(ldap_server, get_info=ALL)
 
-print("Server: " + ldap_server)
-print("User: " + ldap_user)
-print("ldap server info: " + str(server.info))
-
-user_list = ["Emma", "Nicky", "Brian", "Debbie", "George", "John", "Paul", "Stuart", "Pete"]
-
-time.sleep(30)
-
+user_list = [
+    "Emma",
+    "Nicky",
+    "Brian",
+    "Debbie",
+    "George",
+    "John",
+    "Paul",
+    "Stuart",
+    "Pete",
+]
+print("connecting")
 for i in range(0, 10000000000):
     print("Run #" + str(i))
     conn = Connection(server, ldap_user, ldap_password, auto_bind=True, authentication="SIMPLE")
