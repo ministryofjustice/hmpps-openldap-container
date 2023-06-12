@@ -3,10 +3,14 @@ import random
 import os
 import time
 
-ldap_server = "ldap://localhost"
+ldap_server = os.getenv("LDAP_SERVER")
 ldap_user = "cn=root,dc=moj,dc=com"
-ldap_password = "password"
+ldap_password = os.getenv("BIND_PASSWORD")
 server = Server(ldap_server, get_info=ALL)
+
+print("Server: " + ldap_server)
+print("User: " + ldap_user)
+print("ldap server info: " + str(server.info))
 
 user_list = [
     "Emma",
