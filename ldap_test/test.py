@@ -1,3 +1,6 @@
+#! /usr/bin/env python3
+-*- coding: utf-8 -*-
+
 from ldap3 import Server, Connection, ALL, SUBTREE
 import random
 import os
