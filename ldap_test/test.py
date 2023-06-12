@@ -19,6 +19,7 @@ user_list = [
     "Stuart",
     "Pete",
 ]
+time.sleep(30)
 print("connecting")
 for i in range(0, 10000000000):
     print("Run #" + str(i))
