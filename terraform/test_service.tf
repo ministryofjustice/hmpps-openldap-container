@@ -15,6 +15,10 @@ module "container_test" {
     {
       name  = "ECS_IMAGE_PULL_BEHAVIOR"
       value = "always"
+    },
+    {
+      name  = "PYTHONUNBUFFERED"
+      value = "1"
     }
   ]
   secrets = [
