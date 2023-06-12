@@ -5,7 +5,6 @@ import random
 from ldap3 import Server, Connection, ALL, SUBTREE
 -*- coding: utf-8 - *-
 
-
 ldap_server = os.getenv("LDAP_SERVER")
 ldap_user = "cn=root,dc=moj,dc=com"
 ldap_password = os.getenv("BIND_PASSWORD")
@@ -27,10 +26,12 @@ user_list = [
     "Pete",
 ]
 
-time.sleep(30)
 print("connecting")
 for i in range(0, 10000000000):
     print("Run #" + str(i))
+    
+    time.sleep(30)
+    
     conn = Connection(server, ldap_user, ldap_password,
                       auto_bind=True, authentication="SIMPLE")
     conn.search(
