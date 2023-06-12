@@ -2,7 +2,7 @@
 import time
 import os
 import random
-from ldap3 import Server, Connection, ALL, SUBTREE
+from ldap3 import Server, Connection, ALL, SUBTREE, LEVEL
 
 
 ldap_server = os.getenv("LDAP_SERVER")
@@ -30,14 +30,13 @@ print("connecting")
 for i in range(0, 10000000000):
     print("Run #" + str(i))
 
-    time.sleep(30)
+    time.sleep(2)
 
-    conn = Connection(server, ldap_user, ldap_password,
-                      auto_bind=True, authentication="SIMPLE")
+    conn = Connection(server, ldap_user, ldap_password, auto_bind=True, authentication="SIMPLE")
     conn.search(
         "ou=Users,dc=moj,dc=com",
         "(&(cn=" + random.choice(user_list) + "*)(objectClass=person))",
-        search_scope=SUBTREE,
+        search_scope=LEVEL,
         attributes=["*"],
     )
     print(conn.entries)
