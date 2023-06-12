@@ -6,8 +6,8 @@ module "container" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.59.0"
   container_name           = local.app_name
   container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:${var.image_tag}"
-  container_memory         = "16384"
-  container_cpu            = "8192"
+  container_memory         = "8192"
+  container_cpu            = "4096"
   essential                = true
   readonly_root_filesystem = false
   environment = [
@@ -65,8 +65,8 @@ module "deploy" {
   network_mode = "awsvpc"
 
   task_cpu    = "8192"
-  task_memory = "16384"
-
+  task_memory = "4096"
+s
   service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-service"
   task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task"
   task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task-exec"
