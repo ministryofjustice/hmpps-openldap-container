@@ -29,9 +29,9 @@ user_list = [
 print("connecting")
 for i in range(0, 10000000000):
     print("Run #" + str(i))
-    
+
     time.sleep(30)
-    
+
     conn = Connection(server, ldap_user, ldap_password,
                       auto_bind=True, authentication="SIMPLE")
     conn.search(
