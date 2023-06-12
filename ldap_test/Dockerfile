@@ -14,4 +14,4 @@ COPY test.sh /test.sh
 
 RUN chmod a+x /test.sh
 
-ENTRYPOINT [ "bash" "/test.sh" ]
+ENTRYPOINT [ "/test.sh" ]
