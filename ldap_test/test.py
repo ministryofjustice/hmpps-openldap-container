@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
--*- coding: utf-8 -*-
-
-from ldap3 import Server, Connection, ALL, SUBTREE
-import random
-import os
 import time
+import os
+import random
+from ldap3 import Server, Connection, ALL, SUBTREE
+-*- coding: utf-8 - *-
+
 
 ldap_server = os.getenv("LDAP_SERVER")
 ldap_user = "cn=root,dc=moj,dc=com"
