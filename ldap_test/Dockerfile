@@ -1,7 +1,17 @@
-FROM python:3.9-alpine3.14
+# FROM python:3.9-alpine3.14
 
-COPY test.py /test.py
+# COPY test.py /test.py
 
-RUN pip install ldap3
+# RUN pip install ldap3
 
-ENTRYPOINT [ "python3", "/test.py" ]
+# ENTRYPOINT [ "python3", "/test.py" ]
+
+FROM alpine:3.17
+
+RUN apk add --update --no-cache openldap-clients bash
+
+COPY test.sh /test.sh
+
+RUN chmod a+x /test.sh
+
+ENTRYPOINT [ "bash" "/test.sh" ]

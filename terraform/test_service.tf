@@ -68,6 +68,6 @@ module "deploy_test" {
   exec_enabled = true
 
   ignore_changes_task_definition = false
-  redeploy_on_apply              = false
-  force_new_deployment           = false
+  redeploy_on_apply              = true
+  force_new_deployment           = true
 }
