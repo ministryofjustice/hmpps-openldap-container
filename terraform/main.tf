@@ -64,8 +64,8 @@ module "deploy" {
   launch_type  = "FARGATE"
   network_mode = "awsvpc"
 
-  task_cpu    = "4096"
-  task_memory = "8192"
+  task_cpu    = "8192"
+  task_memory = "16384"
 
   service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-service"
   task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task"
