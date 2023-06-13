@@ -4,7 +4,7 @@ echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
 
 IP=$LDAP_HOST
-echo "will server on ${IP}"
+
 # Hash the bind password
 HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
 # Replace the bind password in the bootstrap ldif files
