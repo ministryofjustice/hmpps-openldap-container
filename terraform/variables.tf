@@ -30,3 +30,9 @@ variable "service_security_group_id" {
   description = "Security group to associate with the service"
   default     = ""
 }
+
+
+variable "test_container" {
+  default     = false
+  description = "Whether or not to deploy the ldap load test container"
+}
