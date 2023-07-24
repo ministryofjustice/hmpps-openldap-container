@@ -10,3 +10,5 @@ env/
 terraform.tfstate
 docker/*.ldif
 *.ldif
+docker/mdb/data.mdb
+docker/mdb/lock.mdb
