@@ -4,7 +4,7 @@ services:
     depends_on:
       - ldap
     stdin_open: true # docker run -i
-    tty: true        # docker run -t
+    tty: true # docker run -t
   ldap:
     build: ../docker/
     environment:
