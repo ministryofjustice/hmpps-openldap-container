@@ -9,10 +9,15 @@ services:
     build: ../docker/
     environment:
       - SLAPD_LOG_LEVEL=-1
-      - BIND_PASSWORD=password
+      - BIND_ROOT_PASSWORD=password
       - LOCAL=true
       - LDAP_HOST=0.0.0.0
       - LDAP_PORT=389
+      - BASE_ROOT="dc=moj,dc=com"
+      - BASE_USERS="ou=Users,dc=moj,dc=com"
+      - BASE_GROUPS="ou=Groups,dc=moj,dc=com"
+      - BIND_ADMIN_USER="cn=admin,dc=moj,dc=com"
+      - BIND_ADMIN_PASSWORD=password
     ports:
       - "389:389/tcp"
       - "389:389/udp"

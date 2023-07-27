@@ -1,10 +1,6 @@
 name: image-build-push
 on:
   push:
-    paths-ignore:
-      - 'helm/**'
-      - 'kubernetes/**'
-      - '.github/workflows/cloud-platform-sandbox-build-deploy.yml'
 
 jobs:
   image-build:
@@ -35,7 +31,7 @@ jobs:
 
       - name: Docker build
         run: |
-            docker build --no-cache -t ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g') ./docker
+          docker build --no-cache -t ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g') ./docker
 
       - name: Docker login
         if: contains(github.event.head_commit.message, 'ecr_push') || github.ref == 'refs/heads/main'

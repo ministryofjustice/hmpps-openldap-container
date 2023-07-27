@@ -4,11 +4,17 @@ echo "starting openldap"
 echo $SLAPD_LOG_LEVEL
 
 IP=$LDAP_HOST
+BASE_ROOT_DC="${BASE_ROOT%%,*}"
+BASE_USERS_OU="${BASE_USERS%%,*}"
+BASE_GROUPS_OU="${BASE_GROUPS%%,*}"
+BIND_ADMIN_USER_CN="${BIND_ADMIN_USER%%,*}"
 
-# Hash the bind password
-HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
+# Hash the bind passwords for root and admin user
+HASHED_BIND_ROOT_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_ROOT_PASSWORD)
+HASHED_BIND_ADMIN_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_ADMIN_PASSWORD)
+
 # Replace the bind password in the bootstrap ldif files
-sed -i "s_HASHEDPASSWORD_${HASHED_BIND_PASSWORD}_g" /bootstrap/db.ldif
+sed -i "s_HASHEDPASSWORD_${HASHED_BIND_ROOT_PASSWORD}_g" /bootstrap/db.ldif
 
 # Start slapd in the background
 slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" &
@@ -35,18 +41,48 @@ echo "Loading bootstrap ldif file 1"
 ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif
 echo "Loading bootstrap ldif file 2"
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
+
 # Load the bootstrap schemas
 echo "Loading bootstrap default schemas"
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif
+
 # Load the bootstrap ldif files
 echo "Loading bootstrap ldif file 3"
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
-# load the delius rbac ldif files
+
+# load the delius rbac ldif files - context
+cp /rbac/context.ldif.j2 rbac/context.ldif
+sed -i "s/{{ ldap_config.base_root }}/${BASE_ROOT}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.base_root | .* }}/${BASE_ROOT_DC}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.base_users }}/${BASE_USERS}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.base_users | .* }}/${BASE_USERS_OU}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.base_groups }}/${BASE_GROUPS}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.base_groups | .* }}/${BASE_GROUPS_OU}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.bind_user }}/${BIND_ADMIN_USER}/g" /rbac/context.ldif
+sed -i "s/{{ ldap_config.bind_user | .* }}/${BIND_ADMIN_USER_CN}/g" /rbac/context.ldif
+# echo $HASHED_BIND_ADMIN_PASSWORD
+# sed -i "s/{{ bind_password_hash.stdout }}/${HASHED_BIND_ADMIN_PASSWORD}/g" /rbac/context.ldif
+ldapadd -Y EXTERNAL -Q -H ldapi:/// -c -f /rbac/context.ldif || echo "Unable to apply context changes"
+# rm -rf rbac/context.ldif
+
+# load the delius rbac ldif files - policies
+# TO DO
+
+# load the delius rbac ldif files - schemas
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/delius.ldif
 ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /rbac/schemas/pwm.ldif
+
+# load the delius rbac ldif files - roles
+# TO DO
+
+# load the delius rbac ldif files - groups
+# TO DO
+
+# load the delius rbac ldif files - users
+# TO DO
 
 echo "Schemas loaded"
 
