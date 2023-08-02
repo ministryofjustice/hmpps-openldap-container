@@ -26,21 +26,12 @@ RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
 
 # Wait for slapd to start by continually trying to connect to it
 COPY start_ldap.sh /start_ldap.sh
-RUN chmod +x /start_ldap.sh && ./start_ldap.sh && \
-  # Loading bootstrap ldif file 1
-  ldapmodify -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/config.ldif && \
+RUN slapmodify -n 0 -F /etc/openldap/slapd.d -l /bootstrap/config.ldif && \
   # Load the bootstrap schemas
-  ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/cosine.ldif && \
-  ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/nis.ldif && \
-  ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/inetorgperson.ldif && \
-  ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /etc/openldap/schema/java.ldif 
-# Loading bootstrap overlays - currently failing all operations returning ldap_add No such object (32)
-# ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/overlays.ldif
-
-
-
-# echo "Loading bootstrap ldif file 2"
-# ldapadd -Y EXTERNAL -H ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi -f /bootstrap/db.ldif
+  slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/schema/cosine.ldif && \
+  slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/schema/nis.ldif && \
+  slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/schema/inetorgperson.ldif && \
+  slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/schema/java.ldif 
 
 # Tidy up
 # TO DO
