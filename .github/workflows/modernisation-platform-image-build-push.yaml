@@ -36,7 +36,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: ./docker
-          tags: delius-openldap-ecr-repo:${{ github.sha }}
+          tags: delius-core-openldap-ecr-repo:${{ github.sha }}
           outputs: type=docker,dest=/tmp/openldap.tar
           push: false
           cache-from: type=gha
