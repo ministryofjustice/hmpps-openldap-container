@@ -23,5 +23,5 @@ data "aws_subnet" "private_subnets_c" {
 }
 
 data "aws_secretsmanager_secret" "bind_password" {
-  name = "${local.app_name}-bind-password"
+  name = "${var.namespace}-${var.environment}-openldap-bind-password"
 }
