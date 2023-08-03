@@ -1,1 +1,1 @@
-bucket = "delius-core-development-openldap-deployment"
+bucket = "delius-core-dev-openldap-deployment"
