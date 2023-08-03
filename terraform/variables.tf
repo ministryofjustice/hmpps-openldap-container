@@ -8,9 +8,14 @@ variable "environment" {
   description = "Environment name"
 }
 
-variable "target_group_name" {
+variable "namespace" {
   type        = string
-  description = "Name of the target group to register the service with"
+  description = "Namespace name"
+}
+
+variable "target_group_arn" {
+  type        = string
+  description = "ARN of the target group to register the service with"
 }
 
 variable "image_tag" {
@@ -35,4 +40,10 @@ variable "service_security_group_id" {
 variable "test_container" {
   default     = false
   description = "Whether or not to deploy the ldap load test container"
+}
+
+
+variable "cluster_arn" {
+  description = "Cluster ARN"
+  type        = string
 }
