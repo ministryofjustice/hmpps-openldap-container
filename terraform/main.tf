@@ -73,9 +73,9 @@ module "deploy" {
   task_cpu    = "8192"
   task_memory = "16384"
 
-  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.service_role.name}"
-  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.task_role.name}"
-  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.task_exec_role.name}"
+  service_role_arn   = "arn:aws:iam::326912278139:role/dev-openldap-ecs-service"
+  task_role_arn      = "arn:aws:iam::326912278139:role/dev-openldap-ecs-task"
+  task_exec_role_arn = "arn:aws:iam::326912278139:role/dev-openldap-task-exec"
 
   environment = var.environment
   namespace   = var.namespace
