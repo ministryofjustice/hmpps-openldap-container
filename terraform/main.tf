@@ -55,9 +55,9 @@ module "container" {
 }
 
 module "deploy" {
-  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=5f488ac0de669f53e8283fff5bcedf5635034fe1"
+  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
   container_definition_json = module.container.json_map_encoded_list
-  ecs_cluster_arn           = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/hmpps-${var.environment}-${local.app_name}"
+  ecs_cluster_arn           = var.cluster_arn
   name                      = local.app_name
   vpc_id                    = var.vpc_id
 
@@ -74,12 +74,13 @@ module "deploy" {
   task_exec_policy_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/jitbit-secrets-reader"]
 
   environment = var.environment
+  namespace   = var.namespace
 
   health_check_grace_period_seconds = 0
 
   ecs_load_balancers = [
     {
-      target_group_arn = data.aws_lb_target_group.service.arn
+      target_group_arn = var.target_group_arn
       container_name   = local.app_name
       container_port   = 389
     }
