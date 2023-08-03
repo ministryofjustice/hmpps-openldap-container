@@ -7,7 +7,8 @@ variable "service_name" {
 }
 
 variable "tags" {
-  type = map(string)
+  type    = map(string)
+  default = {}
 }
 
 variable "extra_task_role_allow_statements" {
