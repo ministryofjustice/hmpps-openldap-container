@@ -1,11 +1,11 @@
 locals {
-  app_name = "delius-core-openldap"
+  app_name = "openldap"
 }
 
 module "container" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.59.0"
   container_name           = local.app_name
-  container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:${var.image_tag}"
+  container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
   container_memory         = "8192"
   container_cpu            = "4096"
   essential                = true
@@ -55,9 +55,9 @@ module "container" {
 }
 
 module "deploy" {
-  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=5f488ac0de669f53e8283fff5bcedf5635034fe1"
+  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
   container_definition_json = module.container.json_map_encoded_list
-  ecs_cluster_arn           = "arn:aws:ecs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/hmpps-${var.environment}-${local.app_name}"
+  ecs_cluster_arn           = var.cluster_arn
   name                      = local.app_name
   vpc_id                    = var.vpc_id
 
@@ -67,19 +67,18 @@ module "deploy" {
   task_cpu    = "8192"
   task_memory = "16384"
 
-  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-service"
-  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task"
-  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task-exec"
-
-  task_exec_policy_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/jitbit-secrets-reader"]
+  service_role_arn   = "arn:aws:iam::326912278139:role/dev-openldap-ecs-service"
+  task_role_arn      = "arn:aws:iam::326912278139:role/dev-openldap-ecs-task"
+  task_exec_role_arn = "arn:aws:iam::326912278139:role/dev-openldap-task-exec"
 
   environment = var.environment
+  namespace   = var.namespace
 
   health_check_grace_period_seconds = 0
 
   ecs_load_balancers = [
     {
-      target_group_arn = data.aws_lb_target_group.service.arn
+      target_group_arn = var.target_group_arn
       container_name   = local.app_name
       container_port   = 389
     }
