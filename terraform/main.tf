@@ -54,12 +54,6 @@ module "container" {
   }
 }
 
-module "ldap_ecs_policies" {
-  source       = "./modules/ecs_policies"
-  env_name     = var.environment
-  service_name = "openldap"
-}
-
 module "deploy" {
   source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
   container_definition_json = module.container.json_map_encoded_list
