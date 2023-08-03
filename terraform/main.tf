@@ -1,11 +1,11 @@
 locals {
-  app_name = "delius-core-openldap"
+  app_name = "openldap"
 }
 
 module "container" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.59.0"
   container_name           = local.app_name
-  container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:${var.image_tag}"
+  container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
   container_memory         = "8192"
   container_cpu            = "4096"
   essential                = true
