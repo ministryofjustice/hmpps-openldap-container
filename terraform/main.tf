@@ -57,8 +57,7 @@ module "container" {
 module "ldap_ecs_policies" {
   source       = "./modules/ecs_policies"
   env_name     = var.environment
-  service_name = "weblogic"
-  tags         = local.tags
+  service_name = "openldap"
 }
 
 module "deploy" {
