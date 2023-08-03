@@ -54,6 +54,13 @@ module "container" {
   }
 }
 
+module "ldap_ecs_policies" {
+  source       = "./modules/ecs_policies"
+  env_name     = var.environment
+  service_name = "weblogic"
+  tags         = local.tags
+}
+
 module "deploy" {
   source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
   container_definition_json = module.container.json_map_encoded_list
@@ -67,11 +74,9 @@ module "deploy" {
   task_cpu    = "8192"
   task_memory = "16384"
 
-  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-service"
-  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task"
-  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/hmpps-${var.environment}-${local.app_name}-task-exec"
-
-  task_exec_policy_arns = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/jitbit-secrets-reader"]
+  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.service_role.name}"
+  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.task_role.name}"
+  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${module.ldap_ecs_policies.task_exec_role.name}"
 
   environment = var.environment
   namespace   = var.namespace
