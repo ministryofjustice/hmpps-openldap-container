@@ -5,3 +5,4 @@ target_group_arn          = "arn:aws:elasticloadbalancing:eu-west-2:326912278139
 service_security_group_id = "sg-0df72ee8455668fd6"
 cluster_arn               = "arn:aws:ecs:eu-west-2:326912278139:cluster/hmpps-dev-delius-core"
 mp_subnet_prefix          = "hmpps-development"
+efs_id                    = "fs-0ad6862e817916d96"
