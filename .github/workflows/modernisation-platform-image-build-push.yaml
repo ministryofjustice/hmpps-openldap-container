@@ -84,7 +84,9 @@ jobs:
     name: Publish image
     needs: [build-image, scan-image]
     permissions:
-      contents: write
+      actions: read
+      contents: read
+      security-events: write
     runs-on: ubuntu-latest
     outputs:
       new_tag: ${{ steps.bump-version.outputs.new_tag }}
