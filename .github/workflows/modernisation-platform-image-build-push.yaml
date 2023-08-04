@@ -49,36 +49,36 @@ jobs:
           path: /tmp/openldap.tar
           retention-days: 1
 
-  # scan-image:
-  #   name: Scan Image
-  #   needs: build-image
-  #   permissions:
-  #     security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download artifact
-  #       uses: actions/download-artifact@v3
-  #       with:
-  #         name: openldap-image
-  #         path: /tmp
+  scan-image:
+    name: Scan Image
+    needs: build-image
+    permissions:
+      security-events: write # for github/codeql-action/upload-sarif to upload SARIF results
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: openldap-image
+          path: /tmp
 
-  #     - name: Load image
-  #       run: |
-  #         docker load --input /tmp/openldap.tar
+      - name: Load image
+        run: |
+          docker load --input /tmp/openldap.tar
 
-  #     - name: Trivy scan
-  #       uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
-  #       with:
-  #         format: 'sarif'
-  #         severity: 'MEDIUM,HIGH,CRITICAL'
-  #         image-ref: 'delius-openldap-ecr-repo:${{ github.sha }}'
-  #         exit-code: '1'
-  #         output: 'trivy-results.sarif'
-  #     - name: Upload Trivy scan results to GitHub Security tab
-  #       uses: github/codeql-action/upload-sarif@v2
-  #       if: failure() # If Trivy found vulnerabilities
-  #       with:
-  #         sarif_file: 'trivy-results.sarif'
+      - name: Trivy scan
+        uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+        with:
+          format: 'sarif'
+          severity: 'MEDIUM,HIGH,CRITICAL'
+          image-ref: 'delius-openldap-ecr-repo:${{ github.sha }}'
+          exit-code: '1'
+          output: 'trivy-results.sarif'
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: failure() # If Trivy found vulnerabilities
+        with:
+          sarif_file: 'trivy-results.sarif'
   
   publish-image:
     name: Publish image
