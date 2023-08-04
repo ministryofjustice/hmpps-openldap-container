@@ -1,0 +1,154 @@
+name: Modernisation Platform Image Build and Push
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+    types: [opened, edited, reopened, synchronize]
+
+jobs:
+  build-image:
+    name: Build Image
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build image and export
+        uses: docker/build-push-action@v4
+        with:
+          context: ./docker
+          tags: delius-core-openldap-ecr-repo:${{ github.sha }}
+          outputs: type=docker,dest=/tmp/openldap.tar
+          push: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: openldap-image
+          path: /tmp/openldap.tar
+          retention-days: 1
+
+  # scan-image:
+  #   name: Scan Image
+  #   needs: build-image
+  #   permissions:
+  #     # required for all workflows
+  #     security-events: write
+  #     # only required for workflows in private repositories
+  #     actions: read
+  #     contents: read
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download artifact
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: openldap-image
+  #         path: /tmp
+
+  #     - name: Load image
+  #       run: |
+  #         docker load --input /tmp/openldap.tar
+
+  #     - name: Trivy scan
+  #       uses: aquasecurity/trivy-action@7b7aa264d83dc58691451798b4d117d53d21edfe
+  #       with:
+  #         format: 'sarif'
+  #         severity: 'MEDIUM,HIGH,CRITICAL'
+  #         image-ref: 'delius-core-openldap-ecr-repo:${{ github.sha }}'
+  #         exit-code: '1'
+  #         output: 'trivy-results.sarif'
+  #     - name: Upload Trivy scan results to GitHub Security tab
+  #       uses: github/codeql-action/upload-sarif@v2
+  #       if: failure() # If Trivy found vulnerabilities
+  #       with:
+  #         sarif_file: 'trivy-results.sarif'
+  
+  publish-image:
+    name: Publish image
+    needs: [build-image]
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    outputs:
+      new_tag: ${{ steps.bump-version.outputs.new_tag }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and push tag
+        id: bump-version
+        uses: anothrNick/github-tag-action@1.67.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          WITH_V: false
+          DEFAULT_BUMP: minor # Making this default visible
+          TAG_CONTEXT: repo # Making this default visible
+          PRERELEASE: ${{ github.base_ref != 'refs/heads/main' }}
+          PRERELEASE_SUFFIX: ${{ github.base_ref }} # Branch name
+      
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: openldap-image
+          path: /tmp
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Load and retag image for publish
+        run: |
+          docker load --input /tmp/openldap.tar
+          docker tag \
+            delius-core-openldap-ecr-repo:${{ github.sha }} \
+            ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
+
+      - name: Login to ECR
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      - name: Publish image
+        run: docker push ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
+
+  deploy-image-delius-core-dev:
+    uses: ./.github/workflows/modernisation-platform-image-deploy.yml
+    needs: [build-image, "publish-image"]
+    with:
+      environment: delius-core-dev
+      image_tag: ${{ needs.publish-image.outputs.new_tag }}
+    secrets: inherit
+
+  # example of another environment
+  # deploy-image-delius-core-mis-dev:
+  #   if: github.ref == 'refs/heads/main'
+  #   needs: [build-image, scan-image, "publish-image"]
+  #   uses: ./.github/workflows/modernisation-platform-image-deploy.yml
+  #   with:
+  #     environment: delius-core-mis-dev
+  #     image_tag: ${{ needs.publish-image.outputs.new_tag }}
+  #   secrets: inherit
