@@ -1,0 +1,26 @@
+name: LDAP Automation
+on:
+  workflow_call:
+    inputs:
+        environment:
+            required: true
+            type: string
+jobs:
+    deploy:
+        name: Create ECS Task in ${{ inputs.environment }}
+        runs-on: ubuntu-latest
+        environment: ${{ github.event.inputs.environment }}
+        steps:
+          - name: Configure AWS Credentials
+            uses: aws-actions/configure-aws-credentials@v2
+            with:
+                aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
+                aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
+                aws-region: "eu-west-2"
+          - name: Deploy to Amazon ECS
+            uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+            with:
+              task-definition: operational-automation/automation-task-def.json
+              container-name: "ldap-automation-task-${{ github.run_id }}"
+              image: "${{ env.IMAGE }}:${{ env.IMAGE_TAG }}"
+              cluster: "${{ env.CLUSTER_ARN }}"
