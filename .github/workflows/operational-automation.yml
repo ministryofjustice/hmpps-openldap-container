@@ -6,7 +6,7 @@ on:
             required: true
             type: choice
             options:
-              - "delius-core-dev"
+              - "dev"
         command-args:
             required: true
             type: choice
@@ -15,9 +15,9 @@ on:
             
 jobs:
     deploy:
-        name: Create ECS Task in ${{ inputs.environment }}
+        name: Create ECS Task in delius-core ${{ github.event.inputs.environment }}
         runs-on: ubuntu-latest
-        environment: ${{ github.event.inputs.environment }}
+        environment: delius-core-${{ github.event.inputs.environment }}
         steps:
           - name: Checkout code
             uses: actions/checkout@v2
@@ -36,10 +36,11 @@ jobs:
                 # Multi-line string containing key/value pairs of JSON property paths and desired property values
                 field-value-pairs: |
                     $.containerDefinitions.command: "ldap-automation ${{env.TASK}}"
+                    $.executionRoleArn: "arn:aws:iam::${{env.AWS_ACCOUNT_ID}}:role/${{ github.event.inputs.environment }}-ldap-task-exec"
           - name: Deploy to Amazon ECS
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
               task-definition: operational-automation/automation-task-def.json
               container-name: "ldap-automation-task-${{ github.run_id }}"
-              image: "${{ env.IMAGE }}:${{ env.IMAGE_TAG }}"
+              image: "${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-ldap-automation-ecr-repo:${{ env.LDAP_AUTOMATION_IMAGE_TAG }}"
               cluster: "${{ env.CLUSTER_ARN }}"
