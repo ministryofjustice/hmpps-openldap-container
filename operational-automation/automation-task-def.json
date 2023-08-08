@@ -29,17 +29,6 @@
     "taskRoleArn": "arn:aws:iam::012345678910:role/ecsTaskExecutionRole",
     "family": "ldap-automation",
     "networkMode": "awsvpc",
-    "networkConfiguration": {
-        "awsvpcConfiguration": {
-            "assignPublicIp": "DISABLED",
-            "securityGroups": [
-                "sg-012345678910"
-            ],
-            "subnets": [
-                "subnet-012345678910"
-            ]
-        }
-    },
     "runtimePlatform": {
         "operatingSystemFamily": "LINUX"
     },
