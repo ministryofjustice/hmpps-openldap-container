@@ -1,22 +1,39 @@
 name: LDAP Automation
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
         environment:
             required: true
             type: string
+        command-args:
+            required: true
+            type: choice
+            options:
+              - "test"
+            
 jobs:
     deploy:
         name: Create ECS Task in ${{ inputs.environment }}
         runs-on: ubuntu-latest
         environment: ${{ github.event.inputs.environment }}
         steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+            
           - name: Configure AWS Credentials
             uses: aws-actions/configure-aws-credentials@v2
             with:
                 aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
                 aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
                 aws-region: "eu-west-2"
+          - name: Template task def
+            uses: christherama/render-json-template@v1
+            with:
+                # Path to JSON file serving as the template for rendering an output file. Required.
+                json-file-path: operational-automation/automation-task-def.json
+                # Multi-line string containing key/value pairs of JSON property paths and desired property values
+                field-value-pairs: |
+                    $.containerDefinitions.command: "ldap-automation ${{env.TASK}}"
           - name: Deploy to Amazon ECS
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
