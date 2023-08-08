@@ -1,7 +1,11 @@
 {
     "containerDefinitions": [
         {
+            "command": [
+                "---"
+            ],
             "essential": true,
+            "image": "",
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
@@ -16,6 +20,7 @@
     "cpu": "256",
     "memory": "512",
     "executionRoleArn": "arn:aws:iam::012345678910:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::012345678910:role/ecsTaskExecutionRole",
     "family": "ldap-automation",
     "networkMode": "awsvpc",
     "runtimePlatform": {
