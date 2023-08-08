@@ -11,7 +11,7 @@
                 }
             ],
             "essential": true,
-            "image": "",
+            "image": "value",
             "logConfiguration": {
                 "logDriver": "awslogs",
                 "options": {
