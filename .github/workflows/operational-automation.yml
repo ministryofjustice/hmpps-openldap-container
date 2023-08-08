@@ -4,7 +4,9 @@ on:
     inputs:
         environment:
             required: true
-            type: string
+            type: choice
+            options:
+              - "delius-core-dev"
         command-args:
             required: true
             type: choice
