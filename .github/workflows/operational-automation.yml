@@ -47,7 +47,7 @@ jobs:
             run: cat ${{ steps.render.outputs.rendered-json-file }}
           - name: Run Standalone ECS Task
             run: |
-                task_definition=$(aws ecs register-task-definition --cli-input-json file:///${{ steps.render.outputs.rendered-json-file }})
+                task_definition=$(aws ecs register-task-definition --cli-input-json file://${{ steps.render.outputs.rendered-json-file }})
                 task_definition_arn=$(echo $task_definition | jq -r '.taskDefinition.taskDefinitionArn')
 
                 aws ecs run-task --cluster ${{ vars.CLUSTER_ARN }} --task-definition $task_definition_arn
