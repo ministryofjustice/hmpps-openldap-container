@@ -4,6 +4,12 @@
             "command": [
                 "---"
             ],
+            "environment": [
+                {
+                    "name": "key",
+                    "value": "value"
+                }
+            ],
             "essential": true,
             "image": "",
             "logConfiguration": {
