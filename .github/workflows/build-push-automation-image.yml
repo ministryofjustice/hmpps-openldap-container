@@ -3,6 +3,7 @@ on:
   push:
     paths:
         - 'operational-automation/**'
+  workflow_dispatch:
 
 jobs:
   image-build:
