@@ -4,10 +4,10 @@
             "command": [
                 "---"
             ],
-            "environment": [
+            "secrets": [
                 {
                     "name": "key",
-                    "value": "value"
+                    "valueFrom": "value"
                 }
             ],
             "essential": true,
