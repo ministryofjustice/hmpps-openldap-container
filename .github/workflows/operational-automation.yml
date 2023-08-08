@@ -30,6 +30,7 @@ jobs:
                 aws-region: "eu-west-2"
           - name: Template task def
             uses: christherama/render-json-template@v1
+            id: render
             with:
                 # Path to JSON file serving as the template for rendering an output file. Required.
                 json-file-path: operational-automation/automation-task-def.json
