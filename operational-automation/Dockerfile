@@ -1,7 +1,7 @@
 FROM alpine
 
 # Basic tools for now
-RUN apk add --update --no-cache bash ca-certificates curl jq git aws-cli openldap-clients build-base libffi-dev openssl-dev python3 py3-pip gcc musl-dev gcc g++ python python3-dev mysql-dev linux-headers 
+RUN apk add --update --no-cache bash ca-certificates curl jq git aws-cli openldap-clients build-base libffi-dev openssl-dev python3 py3-pip gcc musl-dev gcc g++ python3-dev mysql-dev linux-headers 
 
 RUN python3 -m pip install --upgrade pip
 ## https://github.com/oracle/python-oracledb/issues/204
