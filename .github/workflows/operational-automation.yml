@@ -35,12 +35,12 @@ jobs:
                 json-file-path: operational-automation/automation-task-def.json
                 # Multi-line string containing key/value pairs of JSON property paths and desired property values
                 field-value-pairs: |
-                    $.containerDefinitions.command: "ldap-automation ${{env.TASK}}"
+                    $.containerDefinitions[0].command: "ldap-automation ${{env.TASK}}"
                     $.executionRoleArn: "arn:aws:iam::${{env.AWS_ACCOUNT_ID}}:role/${{ github.event.inputs.environment }}-ldap-task-exec"
           - name: Deploy to Amazon ECS
             uses: aws-actions/amazon-ecs-deploy-task-definition@v1
             with:
-              task-definition: operational-automation/automation-task-def.json
+              task-definition: ${{ steps.render.outputs.rendered-json-file }}
               container-name: "ldap-automation-task-${{ github.run_id }}"
               image: "${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-ldap-automation-ecr-repo:${{ env.LDAP_AUTOMATION_IMAGE_TAG }}"
               cluster: "${{ env.CLUSTER_ARN }}"
