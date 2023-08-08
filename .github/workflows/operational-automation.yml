@@ -7,7 +7,7 @@ on:
             type: choice
             options:
               - "dev"
-        command-args:
+        command_args:
             required: true
             type: choice
             options:
@@ -36,7 +36,7 @@ jobs:
                 json-file-path: operational-automation/automation-task-def.json
                 # Multi-line string containing key/value pairs of JSON property paths and desired property values
                 field-value-pairs: |
-                    $.containerDefinitions[0].command: "ldap-automation ${{env.TASK}}"
+                    $.containerDefinitions[0].command: ["ldap-automation", "${{ github.event.inputs.command_args }}"]
                     $.executionRoleArn: "arn:aws:iam::${{env.AWS_ACCOUNT_ID}}:role/${{ github.event.inputs.environment }}-ldap-task-exec"
           - name: Show rendered user service task
             run: cat ${{ steps.render.outputs.rendered-json-file }}
