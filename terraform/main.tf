@@ -57,7 +57,7 @@ module "container" {
 module "deploy" {
   source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
   container_definition_json = module.container.json_map_encoded_list
-  ecs_cluster_arn           = var.cluster_arn
+  ecs_cluster_arn           = "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.id}:cluster/${var.namespace}-${var.environment}-cluster"
   name                      = local.app_name
   vpc_id                    = var.vpc_id
 

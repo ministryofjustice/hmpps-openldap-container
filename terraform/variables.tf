@@ -42,13 +42,6 @@ variable "test_container" {
   description = "Whether or not to deploy the ldap load test container"
 }
 
-
-variable "cluster_arn" {
-  description = "Cluster ARN"
-  type        = string
-}
-
-
 variable "mp_subnet_prefix" {
   description = "Prefix for subnet names"
   type        = string
