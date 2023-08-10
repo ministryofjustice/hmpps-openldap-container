@@ -25,7 +25,7 @@ module "container" {
     },
     {
       name  = "MIGRATION_S3_LOCATION"
-      value = "s3://delius-core-development-openldap-migration/test_migration.ldif"
+      value = var.s3_migration_seed_uri
     }
   ]
   secrets = [
