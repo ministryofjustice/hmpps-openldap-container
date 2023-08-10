@@ -65,3 +65,9 @@ variable "efs_access_point_id" {
   description = "EFS Access Point ID"
   type        = string
 }
+
+
+variable "s3_migration_seed_uri" {
+  description = "S3 Migration Seed URI"
+  type        = string
+}

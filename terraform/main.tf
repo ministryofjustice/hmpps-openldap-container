@@ -25,7 +25,7 @@ module "container" {
     },
     {
       name  = "MIGRATION_S3_LOCATION"
-      value = "s3://delius-core-development-openldap-migration/test_migration.ldif"
+      value = var.s3_migration_seed_uri
     }
   ]
   secrets = [
@@ -67,9 +67,9 @@ module "deploy" {
   task_cpu    = "8192"
   task_memory = "16384"
 
-  service_role_arn   = "arn:aws:iam::326912278139:role/dev-openldap-ecs-service"
-  task_role_arn      = "arn:aws:iam::326912278139:role/dev-openldap-ecs-task"
-  task_exec_role_arn = "arn:aws:iam::326912278139:role/dev-openldap-task-exec"
+  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-service"
+  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-task"
+  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-task-exec"
 
   environment = var.environment
   namespace   = var.namespace
