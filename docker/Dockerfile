@@ -11,7 +11,7 @@ COPY initial_config/slapd.ldif /etc/openldap/slapd.ldif
 
 COPY delius_config /bootstrap/
 
-# For local testing purposes, you should copy the ldif into the root as below and set the ENV Var LOCAL=true
+# For local testing purposes, you should copy the ldif into the root as below (or mount it as a docker volume) and set the ENV Var LOCAL=true to disable s3 pulls
 # COPY local_seed.ldif /local_seed.ldif
 
 # clone rbac repo 
