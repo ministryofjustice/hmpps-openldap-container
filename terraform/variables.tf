@@ -42,13 +42,6 @@ variable "test_container" {
   description = "Whether or not to deploy the ldap load test container"
 }
 
-
-variable "cluster_arn" {
-  description = "Cluster ARN"
-  type        = string
-}
-
-
 variable "mp_subnet_prefix" {
   description = "Prefix for subnet names"
   type        = string
@@ -63,5 +56,11 @@ variable "efs_id" {
 
 variable "efs_access_point_id" {
   description = "EFS Access Point ID"
+  type        = string
+}
+
+
+variable "s3_migration_seed_uri" {
+  description = "S3 Migration Seed URI"
   type        = string
 }
