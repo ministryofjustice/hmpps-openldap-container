@@ -14,6 +14,7 @@ COPY delius_config /bootstrap/
 # For local testing purposes, you should copy the ldif into the root as below (or mount it as a docker volume) and set the ENV Var LOCAL=true to disable s3 pulls
 # COPY local_seed.ldif /local_seed.ldif
 
+# added new ENV var to allow selecting a specific version of the rbac repo
 ARG RBAC_TAG=master
 
 # clone rbac repo 
