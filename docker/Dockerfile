@@ -18,7 +18,7 @@ COPY delius_config /bootstrap/
 ARG RBAC_TAG=master
 
 # clone rbac repo 
-RUN git clone https://github.com/ministryofjustice/hmpps-ndelius-rbac.git@${RBAC_TAG} /rbac && apk del git && chown -R ldap:ldap /bootstrap /rbac
+RUN git clone --depth 1 --branch ${RBAC_TAG} https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac && apk del git && chown -R ldap:ldap /bootstrap /rbac
 
 RUN slapadd -n 0 -F /etc/openldap/slapd.d -l /etc/openldap/slapd.ldif
 
