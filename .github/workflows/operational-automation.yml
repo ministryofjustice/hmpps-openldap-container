@@ -28,6 +28,15 @@ jobs:
                 aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
                 aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
                 aws-region: "eu-west-2"
+        #ci-cd-member user cant do this yet
+        #   - name: Set cluster ARN
+        #     id: set-cluster-arn
+        #     run: |
+        #         echo "CLUSTER_ARN=$(aws ecs list-clusters --query "clusterArns[?contains(@, 'delius-core-${{ github.event.inputs.environment }}-cluster')]" --output text)" >> $GITHUB_OUTPUT
+          - name: Set cluster ARN
+            id: set-cluster-arn
+            run: |
+                echo "CLUSTER_ARN=delius-core-${{ github.event.inputs.environment }}-cluster" >> $GITHUB_OUTPUT        
           - name: Get security groups and subnet ids
             id: get-ids
             run: |
@@ -52,6 +61,10 @@ jobs:
                     $.containerDefinitions[0].containerName: "ldap-automation-task-${{ github.run_id }}"
 
                     $.containerDefinitions[0].secrets: [{"name": "LDAP_HOST", "valueFrom": "arn:aws:ssm:${{vars.AWS_REGION}}:${{vars.AWS_ACCOUNT_ID}}:parameter/delius-core/LDAP_HOST"}, {"name": "LDAP_USER", "valueFrom": "arn:aws:ssm:${{vars.AWS_REGION}}:${{vars.AWS_ACCOUNT_ID}}:parameter/delius-core/LDAP_PRINCIPAL"}, {"name": "LDAP_PASSWORD", "valueFrom": "arn:aws:secretsmanager:${{vars.AWS_REGION}}:${{vars.AWS_ACCOUNT_ID}}:secret:delius-core-dev-openldap-bind-password-CagKSo"}]
+
+                    $.containerDefinitions[0].logConfiguration.logDriver.options."awslogs-group": "/ecs/ldap-automation"
+                    $.containerDefinitions[0].logConfiguration.logDriver.options."awslogs-region": "${{vars.AWS_REGION}}"
+                    $.containerDefinitions[0].logConfiguration.logDriver.options."awslogs-stream-prefix": "${{ github.run_id }}"
                     
           - name: Show rendered user service task
             if: github.ref != 'refs/heads/main'
@@ -63,7 +76,10 @@ jobs:
                 task_definition_arn=$(echo $task_definition | jq -r '.taskDefinition.taskDefinitionArn') 
                 echo "TASK_DEF_ARN=$(echo $task_definition | jq -r '.taskDefinition.taskDefinitionArn') " >> $GITHUB_OUTPUT
 
-                aws ecs run-task --cluster ${{ vars.CLUSTER_ARN }} --task-definition $task_definition_arn --network-configuration "awsvpcConfiguration={subnets=${{ steps.get-ids.outputs.SUBNET_IDS }},securityGroups=${{ steps.get-ids.outputs.SEC_GROUPS }},assignPublicIp=DISABLED}" --launch-type FARGATE --count 1
+                aws ecs run-task --cluster ${{ steps.set-cluster-arn.outputs.CLUSTER_ARN }} --task-definition $task_definition_arn --network-configuration "awsvpcConfiguration={subnets=${{ steps.get-ids.outputs.SUBNET_IDS }},securityGroups=${{ steps.get-ids.outputs.SEC_GROUPS }},assignPublicIp=DISABLED}" --launch-type FARGATE --count 1
           - name: Delete Task Definition
             run: |
                 aws ecs deregister-task-definition --task-definition ${{steps.run-task.outputs.TASK_DEF_ARN}}
+          - name: Tail aws logs
+            run: |
+                aws logs tail --follow --since 1m /ecs/ldap-automation/${{ github.run_id }}
