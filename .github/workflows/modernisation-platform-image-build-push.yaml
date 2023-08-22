@@ -27,7 +27,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -120,20 +120,20 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.CICD_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.CICD_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Load and retag image for publish
         run: |
           docker load --input /tmp/openldap.tar
           docker tag \
             delius-core-openldap-ecr-repo:${{ github.sha }} \
-            ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
+            ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
 
       - name: Login to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+        run: aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
       - name: Publish image
-        run: docker push ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
+        run: docker push ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
 
   deploy-image-delius-core-dev:
     uses: ./.github/workflows/modernisation-platform-image-deploy.yml
