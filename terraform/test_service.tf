@@ -1,6 +1,6 @@
 module "container_test" {
   count                    = var.test_container ? 1 : 0
-  source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.59.0"
+  source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.60.0"
   container_name           = local.app_name
   container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${local.app_name}-ecr-repo:ldap_test"
   container_memory         = "2048"
