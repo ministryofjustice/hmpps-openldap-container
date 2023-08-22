@@ -34,10 +34,10 @@ jobs:
 
       - name: Docker build
         run: |
-            docker build --no-cache --build-arg="RBAC_TAG=${{vars.RBAC_TAG}}" -t ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-ldap-automation-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g') ./operational-automation
+            docker build --no-cache --build-arg="RBAC_TAG=${{vars.RBAC_TAG}}" -t ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}..amazonaws.com/delius-core-ldap-automation-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g') ./operational-automation
 
       - name: Docker login
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}..amazonaws.com
 
       - name: Docker push
-        run: docker push ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-ldap-automation-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
+        run: docker push ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}..amazonaws.com/delius-core-ldap-automation-ecr-repo:$(echo ${{ steps.BumpVersionAndPushTag.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
