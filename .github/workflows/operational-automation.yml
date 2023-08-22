@@ -75,7 +75,4 @@ jobs:
           - name: Delete Task Definition
             run: |
                 aws ecs deregister-task-definition --task-definition ${{steps.run-task.outputs.TASK_DEF_ARN}}
-          - name: Tail aws logs
-            run: |
-                aws logs tail --follow --since 1m /ecs/ldap-automation/${{ github.run_id }}
                 
