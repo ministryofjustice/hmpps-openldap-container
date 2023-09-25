@@ -1,0 +1,15 @@
+services:
+  ldap:
+    build: ./
+    environment:
+      - SLAPD_LOG_LEVEL=-1
+      - BIND_PASSWORD=password
+      - LOCAL=true
+      - LDAP_HOST=0.0.0.0
+      - LDAP_PORT=389
+    ports:
+      - "389:389/tcp"
+      - "389:389/udp"
+    volumes:
+      - ./mdb:/var/lib/openldap/openldap-data/
+      - ./local_seed.ldif:/local_seed.ldif
