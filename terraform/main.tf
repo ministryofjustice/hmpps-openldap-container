@@ -17,7 +17,7 @@ module "container" {
     },
     {
       name  = "SLAPD_LOG_LEVEL"
-      value = var.SLAPD_LOG_LEVEL
+      value = var.slapd_log_level
     },
     {
       name  = "LDAP_PORT"
