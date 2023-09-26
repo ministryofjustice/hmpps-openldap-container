@@ -65,8 +65,8 @@ variable "s3_migration_seed_uri" {
   type        = string
 }
 
-variable "SLAPD_LOG_LEVEL" {
-  description = "SLAPD_LOG_LEVEL"
+variable "slapd_log_level" {
+  description = "slapd log level"
   type        = string
   default     = "stats"
 }
