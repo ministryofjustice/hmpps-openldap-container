@@ -14,3 +14,4 @@ docker/*.ldif
 # OpenLDAP data files
 **/data.mdb
 **/lock.mdb
+.idea/
