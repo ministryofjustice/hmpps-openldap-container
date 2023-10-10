@@ -146,6 +146,15 @@ jobs:
       image_tag: ${{ needs.publish-image.outputs.new_tag }}
     secrets: inherit
 
+  deploy-image-delius-core-test:
+    if: github.ref == 'refs/heads/main'
+    uses: ./.github/workflows/modernisation-platform-image-deploy.yml
+    needs: [build-image, "publish-image"]
+    with:
+      environment: delius-core-test
+      image_tag: ${{ needs.publish-image.outputs.new_tag }}
+    secrets: inherit
+
   # example of another environment
   # deploy-image-delius-core-mis-dev:
   #   if: github.ref == 'refs/heads/main'
