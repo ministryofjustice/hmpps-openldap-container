@@ -2,8 +2,9 @@
 # dn: cn=module,cn=config
 # cn: module
 # objectClass: olcModuleList
-# olcModulePath: /usr/lib/openldap
-
+olcModulePath: /usr/lib/openldap
+olcModuleLoad: memberof.so
+olcModuleLoad: refint.so
 
 # Apply memberof overlay for dynamic group membership
 dn: olcOverlay={0}memberof,olcDatabase={2}mdb,cn=config
