@@ -1,7 +1,7 @@
 # Load modules
-# dn: cn=module,cn=config
-# cn: module
-# objectClass: olcModuleList
+dn: cn=module,cn=config
+cn: module
+objectClass: olcModuleList
 olcModulePath: /usr/lib/openldap
 olcModuleLoad: memberof.so
 olcModuleLoad: refint.so
