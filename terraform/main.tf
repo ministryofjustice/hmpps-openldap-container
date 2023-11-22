@@ -64,8 +64,8 @@ module "deploy" {
   launch_type  = "FARGATE"
   network_mode = "awsvpc"
 
-  task_cpu    = "8192"
-  task_memory = "16384"
+  task_cpu    = var.ecs_task_cpu
+  task_memory = var.ecs_task_memory
 
   service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-service"
   task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-task"
@@ -74,7 +74,10 @@ module "deploy" {
   environment = var.environment
   namespace   = var.namespace
 
-  health_check_grace_period_seconds = 0
+  health_check_grace_period_seconds  = 0
+  desired_count                      = var.ecs_desired_task_count
+  deployment_maximum_percent         = var.deployment_maximum_percent
+  deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
   ecs_load_balancers = [
     {
