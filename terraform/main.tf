@@ -52,6 +52,13 @@ module "container" {
       "awslogs-stream-prefix" = "openldap"
     }
   }
+  healthcheck = {
+    command     = ["bash", "ldapsearch -x -H ldap://localhost:389 -b '' -s base '(objectclass=*)' namingContexts > /dev/null"]
+    interval    = 30
+    retries     = 3
+    startPeriod = 60
+    timeout     = 5
+  }
 }
 
 module "deploy" {
@@ -74,7 +81,7 @@ module "deploy" {
   environment = var.environment
   namespace   = var.namespace
 
-  health_check_grace_period_seconds  = 0
+  health_check_grace_period_seconds  = 60
   desired_count                      = var.ecs_desired_task_count
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
