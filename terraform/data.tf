@@ -25,3 +25,7 @@ data "aws_subnet" "private_subnets_c" {
 data "aws_secretsmanager_secret" "bind_password" {
   name = "${var.namespace}-${var.environment}-openldap-bind-password"
 }
+
+data "aws_secretsmanager_secret" "seed_uri" {
+  name = "${var.namespace}-${var.environment}-openldap-seed-uri"
+}
