@@ -22,16 +22,16 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "389"
-    },
-    {
-      name  = "MIGRATION_S3_LOCATION"
-      value = var.s3_migration_seed_uri
     }
   ]
   secrets = [
     {
       name      = "BIND_PASSWORD"
       valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+    },
+    {
+      name      = "MIGRATION_S3_LOCATION"
+      valueFrom = data.aws_secretsmanager_secret.seed_uri.arn
     }
   ]
   mount_points = [{
