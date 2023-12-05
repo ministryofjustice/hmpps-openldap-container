@@ -53,7 +53,7 @@ module "container" {
     }
   }
   healthcheck = {
-    command     = ["bash", "ldapsearch -x -H ldap://localhost:389 -b '' -s base '(objectclass=*)' namingContexts"]
+    command     = ["CMD-SHELL", "ldapsearch -x -H ldap://localhost:389 -b '' -s base '(objectclass=*)' namingContexts"]
     interval    = 30
     retries     = 3
     startPeriod = 60
