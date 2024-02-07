@@ -44,7 +44,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: openldap-image
           path: /tmp/openldap.tar
