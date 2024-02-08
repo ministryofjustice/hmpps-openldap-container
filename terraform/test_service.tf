@@ -24,7 +24,7 @@ module "container_test" {
   secrets = [
     {
       name      = "BIND_PASSWORD"
-      valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+      valueFrom = data.aws_ssm_parameter.bind_password.arn
     }
   ]
   log_configuration = {
