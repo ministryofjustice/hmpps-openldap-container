@@ -27,11 +27,11 @@ module "container" {
   secrets = [
     {
       name      = "BIND_PASSWORD"
-      valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+      valueFrom = data.aws_ssm_parameter.bind_password.arn
     },
     {
       name      = "MIGRATION_S3_LOCATION"
-      valueFrom = data.aws_secretsmanager_secret.seed_uri.arn
+      valueFrom = data.aws_ssm_parameter.seed_uri.arn
     }
   ]
   mount_points = [{
