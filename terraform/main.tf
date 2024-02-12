@@ -27,11 +27,11 @@ module "container" {
   secrets = [
     {
       name      = "BIND_PASSWORD"
-      valueFrom = data.aws_secretsmanager_secret.bind_password.arn
+      valueFrom = data.aws_ssm_parameter.bind_password.arn
     },
     {
       name      = "MIGRATION_S3_LOCATION"
-      valueFrom = data.aws_secretsmanager_secret.seed_uri.arn
+      valueFrom = data.aws_ssm_parameter.seed_uri.arn
     }
   ]
   mount_points = [{
@@ -74,9 +74,9 @@ module "deploy" {
   task_cpu    = var.ecs_task_cpu
   task_memory = var.ecs_task_memory
 
-  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-service"
-  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-ecs-task"
-  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/dev-openldap-task-exec"
+  service_role_arn   = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/${var.environment}-openldap-ecs-service"
+  task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/${var.environment}-openldap-ecs-task"
+  task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/${var.environment}-openldap-task-exec"
 
   environment = var.environment
   namespace   = var.namespace
