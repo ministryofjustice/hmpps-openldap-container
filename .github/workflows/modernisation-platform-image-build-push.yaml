@@ -9,7 +9,8 @@ on:
     branches:
       - main
     types: [opened, edited, reopened, synchronize]
-
+  workflow_dispatch:
+    
 jobs:
   build-image:
     name: Build Image
