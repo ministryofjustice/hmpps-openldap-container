@@ -15,7 +15,7 @@ COPY delius_config /bootstrap/
 # COPY local_seed.ldif /local_seed.ldif
 
 # added new ENV var to allow selecting a specific version of the rbac repo
-ARG RBAC_TAG=master
+ARG RBAC_TAG="master"
 
 # clone rbac repo 
 RUN git clone --depth 1 --branch ${RBAC_TAG} https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac && apk del git && chown -R ldap:ldap /bootstrap /rbac
