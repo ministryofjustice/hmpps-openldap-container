@@ -1,16 +1,19 @@
 name: Modernisation Platform Image Build and Push
 
 on:
-  push:
-    branches:
-      - main
-
-  pull_request:
-    branches:
-      - main
-    types: [opened, edited, reopened, synchronize]
   workflow_dispatch:
-    
+    inputs:
+      RBAC_TAG:
+        description: 'RBAC Tag'
+        required: true
+      env:
+        description: 'Environment'
+        required: true
+        type: choice
+        options:
+          - dev
+          - test
+
 jobs:
   build-image:
     name: Build Image
@@ -39,6 +42,8 @@ jobs:
         with:
           context: ./docker
           tags: delius-core-openldap-ecr-repo:${{ github.sha }}
+          build-args: |
+            RBAC_TAG=${{ github.event.inputs.RBAC_TAG }}
           outputs: type=docker,dest=/tmp/openldap.tar
           push: false
           cache-from: type=gha
@@ -138,21 +143,11 @@ jobs:
       - name: Publish image
         run: docker push ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:$(echo ${{ steps.bump-version.outputs.new_tag }} | sed 's/[^a-zA-Z0-9.]/-/g')
 
-  deploy-image-delius-core-dev:
-    if: github.ref == 'refs/heads/main'
+  deploy-image:
     uses: ./.github/workflows/modernisation-platform-image-deploy.yml
     needs: [build-image, "publish-image"]
     with:
-      environment: delius-core-dev
-      image_tag: ${{ needs.publish-image.outputs.new_tag }}
-    secrets: inherit
-
-  deploy-image-delius-core-test:
-    if: github.ref == 'refs/heads/main'
-    uses: ./.github/workflows/modernisation-platform-image-deploy.yml
-    needs: [build-image, "publish-image"]
-    with:
-      environment: delius-core-test
+      environment: delius-core-${{ github.event.inputs.env }}
       image_tag: ${{ needs.publish-image.outputs.new_tag }}
     secrets: inherit
 
