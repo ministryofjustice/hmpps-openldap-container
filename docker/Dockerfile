@@ -2,7 +2,7 @@
 FROM alpine:3.17
 
 # Send TCP keepalive packets after 5 minutes (NLB idle timeout is 350 seconds)
-RUN echo 300 > /proc/sys/net/ipv4/tcp_keepalive_time
+# RUN echo 300 > /proc/sys/net/ipv4/tcp_keepalive_time
 
 RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients openldap-overlay-memberof openldap-overlay-ppolicy openldap-overlay-refint bash ca-certificates curl jq git aws-cli
 
