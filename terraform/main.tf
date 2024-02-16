@@ -59,6 +59,12 @@ module "container" {
     startPeriod = 60
     timeout     = 5
   }
+  system_controls = [
+    {
+      namespace = "net.ipv4.tcp_keepalive_time"
+      value     = "300"
+    }
+  ]
 }
 
 module "deploy" {
