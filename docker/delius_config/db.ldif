@@ -18,6 +18,6 @@ olcTimeLimit: time.soft=30 time.hard=30
 olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
 olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres
 olcDbIndex: entryCSN eq
-olcDbMaxSize: 16106127360
+olcDbMaxSize: 53687091200
 olcDbNosync: TRUE
 olcDbCheckpoint: 1024 1
