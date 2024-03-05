@@ -53,17 +53,17 @@ Host delius-core-dev-bastion
   LogLevel QUIET
   IdentityFile ~/.ssh/id_ed25519_mp
   User username
-  ProxyCommand sh -c "aws ssm start-session --target \$(aws ec2 describe-instances --no-cli-pager --filters 'Name=tag:Name,Values=bastion_dev' --query 'Reservations[0].Instances[0].InstanceId' --profile delius-core-development/modernisation-platform-sandbox | tr -d '\"') --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --profile delius-core-development/modernisation-platform-sandbox --region eu-west-2"
+  ProxyCommand sh -c "aws ssm start-session --target \$(aws ec2 describe-instances --no-cli-pager --filters 'Name=tag:Name,Values=bastion-dev' --query 'Reservations[0].Instances[0].InstanceId' --profile delius-core-development/modernisation-platform-sandbox | tr -d '\"') --document-name AWS-StartSSHSession --parameters 'portNumber=%p' --profile delius-core-development/modernisation-platform-sandbox --region eu-west-2"
 ```
 
 Remember to replace the username, filter name tag value and the aws profile.
 
-There is one bastion per delius environment and the filter should be written as bastion_linux_<env>.
+There is one bastion per delius environment and the filter should be written as bastion-<env>.
 
-Connecting
-Assume an AWS Role
+### Connecting
+1. Assume an AWS Role
 
-`ssh delius-core-dev-bastion`
+2. `ssh delius-core-dev-bastion`
 
 You’ll be presented with a bash shell and the openldap client tools are pre-installed.
 
