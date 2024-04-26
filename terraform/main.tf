@@ -6,8 +6,8 @@ module "container" {
   source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.60.0"
   container_name           = local.app_name
   container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
-  container_memory         = "8192"
-  container_cpu            = "4096"
+  container_memory         = var.ecs_task_cpu
+  container_cpu            = var.ecs_task_memory
   essential                = true
   readonly_root_filesystem = false
   environment = [
