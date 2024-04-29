@@ -4,8 +4,8 @@ locals {
 
 module "container" {
   source                   = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//container?ref=a3bd9f3f13aad3fabed73af1c00eda2d1037a114"
-  name           = local.app_name
-  image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
+  name                     = local.app_name
+  image                    = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
   essential                = true
   readonly_root_filesystem = false
   environment = [
