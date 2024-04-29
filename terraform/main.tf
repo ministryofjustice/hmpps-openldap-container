@@ -66,7 +66,7 @@ module "container" {
 }
 
 module "deploy" {
-  source                = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=df254eb33b39145e5da18c116451a8211a56401a"
+  source                = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=dd18a304ab5237e5bdd371e7a5759930ffda4b76"
   container_definitions = module.container.json_map_encoded_list
   cluster_arn           = "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.id}:cluster/${var.namespace}-${var.environment}-cluster"
   name                  = local.app_name
@@ -119,6 +119,5 @@ module "deploy" {
   enable_execute_command = true
 
   ignore_changes                         = false
-  ignore_changes_service_task_definition = false
   force_new_deployment                   = false
 }
