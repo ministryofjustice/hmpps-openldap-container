@@ -3,9 +3,9 @@ locals {
 }
 
 module "container" {
-  source                   = "git::https://github.com/cloudposse/terraform-aws-ecs-container-definition.git?ref=tags/0.60.0"
-  container_name           = local.app_name
-  container_image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
+  source                   = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//container?ref=a3bd9f3f13aad3fabed73af1c00eda2d1037a114"
+  name           = local.app_name
+  image          = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
   essential                = true
   readonly_root_filesystem = false
   environment = [
@@ -50,7 +50,7 @@ module "container" {
       "awslogs-stream-prefix" = "openldap"
     }
   }
-  healthcheck = {
+  health_check = {
     command     = ["CMD-SHELL", "ldapsearch -x -H ldap://localhost:389 -b '' -s base '(objectclass=*)' namingContexts"]
     interval    = 30
     retries     = 3
