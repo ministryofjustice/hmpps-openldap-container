@@ -118,6 +118,6 @@ module "deploy" {
 
   enable_execute_command = true
 
-  ignore_changes                         = false
-  force_new_deployment                   = false
+  ignore_changes       = false
+  force_new_deployment = false
 }
