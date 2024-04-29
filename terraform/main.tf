@@ -66,14 +66,10 @@ module "container" {
 }
 
 module "deploy" {
-  source                    = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=c195026bcf0a1958fa4d3cc2efefc56ed876507e"
-  container_definition_json = module.container.json_map_encoded_list
-  ecs_cluster_arn           = "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.id}:cluster/${var.namespace}-${var.environment}-cluster"
-  name                      = local.app_name
-  vpc_id                    = var.vpc_id
-
-  launch_type  = "FARGATE"
-  network_mode = "awsvpc"
+  source                = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=df254eb33b39145e5da18c116451a8211a56401a"
+  container_definitions = module.container.json_map_encoded_list
+  cluster_arn           = "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.id}:cluster/${var.namespace}-${var.environment}-cluster"
+  name                  = local.app_name
 
   task_cpu    = var.ecs_task_cpu
   task_memory = var.ecs_task_memory
@@ -82,15 +78,12 @@ module "deploy" {
   task_role_arn      = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/${var.environment}-ldap-ecs-task"
   task_exec_role_arn = "arn:aws:iam::${data.aws_caller_identity.current.id}:role/${var.environment}-ldap-ecs-task-exec"
 
-  environment = var.environment
-  namespace   = var.namespace
-
   health_check_grace_period_seconds  = 60
   desired_count                      = var.ecs_desired_task_count
   deployment_maximum_percent         = var.deployment_maximum_percent
   deployment_minimum_healthy_percent = var.deployment_minimum_healthy_percent
 
-  ecs_load_balancers = [
+  service_load_balancers = [
     {
       target_group_arn = var.target_group_arn
       container_name   = local.app_name
@@ -98,9 +91,9 @@ module "deploy" {
     }
   ]
 
-  security_group_ids = [var.service_security_group_id]
+  security_groups = [var.service_security_group_id]
 
-  subnet_ids = [
+  subnets = [
     data.aws_subnet.private_subnets_a.id,
     data.aws_subnet.private_subnets_b.id,
     data.aws_subnet.private_subnets_c.id
@@ -123,9 +116,9 @@ module "deploy" {
     }
   ]
 
-  exec_enabled = true
+  enable_execute_command = true
 
-  ignore_changes_task_definition = false
-  redeploy_on_apply              = false
-  force_new_deployment           = false
+  ignore_changes                         = false
+  ignore_changes_service_task_definition = false
+  force_new_deployment                   = false
 }
