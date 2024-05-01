@@ -24,22 +24,10 @@ variable "image_tag" {
   description = "Version of the application image to deploy"
 }
 
-variable "s3_bucket_name" {
-  type        = string
-  default     = "latest"
-  description = "s3 bucket name for app"
-}
-
 variable "service_security_group_id" {
   type        = string
   description = "Security group to associate with the service"
   default     = ""
-}
-
-
-variable "test_container" {
-  default     = false
-  description = "Whether or not to deploy the ldap load test container"
 }
 
 variable "mp_subnet_prefix" {
