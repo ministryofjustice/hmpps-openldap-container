@@ -11,4 +11,4 @@ ecs_task_cpu                       = "256"
 ecs_task_memory                    = "512"
 ecs_desired_task_count             = 1
 deployment_minimum_healthy_percent = 0
-deployment_maximum_percent         = 100
+deployment_maximum_percent         = 200
