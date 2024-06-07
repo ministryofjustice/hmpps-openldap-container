@@ -31,7 +31,7 @@ jobs:
           tags: delius-core-openldap-ecr-repo:${{ github.sha }}
           build-args: |
             RBAC_TAG=${{ inputs.rbac_tag }}
-          outputs: type=docker,dest=/tmp/openldap.tar
+          outputs: type=docker,dest=/tmp/openldap-image-${{ inputs.rbac_tag }}.tar
           push: false
           cache-from: type=gha
           cache-to: type=gha,mode=max
