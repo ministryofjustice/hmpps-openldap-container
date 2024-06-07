@@ -28,7 +28,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: ./docker
-          tags: delius-core-openldap-ecr-repo:${{ github.sha }}
+          tags: delius-core-openldap-ecr-repo:${{ github.run_id }}-${{ github.run_attempt }}
           build-args: |
             RBAC_TAG=${{ inputs.rbac_tag }}
           outputs: type=docker,dest=/tmp/openldap-image-${{ inputs.rbac_tag }}.tar
