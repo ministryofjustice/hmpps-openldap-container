@@ -66,7 +66,7 @@ jobs:
           role-session-name: "hmpps-openldap-container-${{ github.run_id }}-${{ github.run_attempt }}"
           aws-region: ${{ vars.AWS_REGION }}
       - name: Load image from artifact
-        run: docker load --input /tmp/openldap--image-${{ inputs.rbac_tag }}.tar
+        run: docker load --input /tmp/openldap-image-${{ inputs.rbac_tag }}.tar
       - name: Tag image with latest
         if: (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) || github.event.ref == 'refs/heads/main'
         run: |
