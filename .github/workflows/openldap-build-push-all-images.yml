@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rbac_tag: ["5.8.12.6", "5.8.12.8", "6.0.31", "6.0.32"]
+        rbac_tag: ["5.6.12", "5.6.15.5", "6.0.3"]
     uses: ./.github/workflows/openldap-build-push-image-reusable.yml
     with:
       rbac_tag: ${{ matrix.rbac_tag }}
