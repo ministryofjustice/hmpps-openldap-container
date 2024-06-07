@@ -7,8 +7,8 @@ on:
     types: [opened, edited, reopened, synchronize, closed]
     paths:
       - "docker/**"
-      - ".github/workflows/jitbit-build-push-image-reusable.yml"
-      - ".github/workflows/jitbit-build-push-all-images.yml"
+      - ".github/workflows/openldap-build-push-image-reusable.yml"
+      - ".github/workflows/openldap-build-push-all-images.yml"
 
 jobs:
   build-image:
