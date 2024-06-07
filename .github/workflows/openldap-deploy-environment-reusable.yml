@@ -47,7 +47,7 @@ jobs:
         with:
           role-to-assume: "arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/modernisation-platform-oidc-cicd"
           role-session-name: "hmpps-openldap-container-${{ github.run_number }}"
-          aws-region: "eu-west-2"
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -91,7 +91,7 @@ jobs:
         with:
           role-to-assume: "arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/modernisation-platform-oidc-cicd"
           role-session-name: "hmpps-openldap-container-${{ github.run_number }}"
-          aws-region: "eu-west-2"
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:

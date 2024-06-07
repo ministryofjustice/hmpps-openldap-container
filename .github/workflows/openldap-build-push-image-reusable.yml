@@ -62,18 +62,18 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: "arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/modernisation-platform-oidc-cicd"
+          role-to-assume: "arn:aws:iam::${{ vars.AWS_ACCOUNT_ID }}:role/modernisation-platform-oidc-cicd"
           role-session-name: "hmpps-openldap-container-${{ github.run_id }}-${{ github.run_attempt }}"
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Load image from artifact
         run: docker load --input /tmp/openldap-${{ inputs.rbac_tag }}.tar
       - name: Tag image with latest
         if: (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true) || github.event.ref == 'refs/heads/main'
         run: |
-          docker tag delius-core-openldap-ecr-repo:${{ github.run_id }}-${{ github.run_attempt }} ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:${{ inputs.rbac_tag }}-latest
+          docker tag delius-core-openldap-ecr-repo:${{ github.run_id }}-${{ github.run_attempt }} ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:${{ inputs.rbac_tag }}-latest
       - name: Tag image with github run id and attempt
         run: |
-          docker tag delius-core-openldap-ecr-repo:${{ github.run_id }}-${{ github.run_attempt }} ${{ secrets.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:${{ inputs.rbac_tag }}-${{ github.run_id }}-${{ github.run_attempt }}
+          docker tag delius-core-openldap-ecr-repo:${{ github.run_id }}-${{ github.run_attempt }} ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/delius-core-openldap-ecr-repo:${{ inputs.rbac_tag }}-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Login to ECR
         run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.CORE_SHARED_SERVICES_ACCOUNT }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
       - name: Push images to ECR
