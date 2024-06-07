@@ -1,0 +1,26 @@
+name: Build images for all RBAC tags
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+    types: [opened, edited, reopened, synchronize, closed]
+    paths:
+      - "docker/**"
+      - ".github/workflows/jitbit-build-push-image-reusable.yml"
+      - ".github/workflows/jitbit-build-push-all-images.yml"
+
+jobs:
+  build-image:
+    permissions:
+      id-token: write
+      contents: write
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        rbac_tag: ["5.8.12.6", "5.8.12.8", "6.0.31", "6.0.32"]
+    uses: ./.github/workflows/openldap-build-push-image-reusable.yml
+    with:
+      rbac_tag: ${{ matrix.rbac_tag }}
+    secrets: inherit
