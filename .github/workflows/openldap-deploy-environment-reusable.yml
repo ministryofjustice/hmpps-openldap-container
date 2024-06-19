@@ -105,7 +105,7 @@ jobs:
           set -e
           cd terraform
           terraform init -backend-config=environments/delius-core-${{ inputs.environment }}/backend.hcl
-          terraform apply -auto-approve -var-file=environments/delius-core${{ inputs.environment }}/terraform.tfvars -var="image_tag=$(echo ${{ env.IMAGE_TAG }} | sed 's/[^a-zA-Z0-9.]/-/g')"
+          terraform apply -auto-approve -var-file=environments/delius-core-${{ inputs.environment }}/terraform.tfvars -var="image_tag=$(echo ${{ env.IMAGE_TAG }} | sed 's/[^a-zA-Z0-9.]/-/g')"
           echo "CLUSTER_ARN=$(terraform output -raw ecs_cluster_arn)" >> $GITHUB_OUTPUT
           echo "SERVICE_ARN=$(terraform output -raw ecs_service_arn)" >> $GITHUB_OUTPUT
       - name: Trigger new ECS service deployment
