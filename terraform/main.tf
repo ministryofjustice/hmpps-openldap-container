@@ -45,7 +45,7 @@ module "container" {
   log_configuration = {
     logDriver = "awslogs"
     options = {
-      "awslogs-group"         = "/ecs/ldap_${var.environment}"
+      "awslogs-group"         = "/ecs/ldap-${var.environment}"
       "awslogs-region"        = data.aws_region.current.name
       "awslogs-stream-prefix" = "openldap"
     }
