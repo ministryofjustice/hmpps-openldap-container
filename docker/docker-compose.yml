@@ -2,7 +2,7 @@ services:
   ldap:
     build: ./
     environment:
-      - SLAPD_LOG_LEVEL=256
+      - SLAPD_LOG_LEVEL=-1
       - BIND_PASSWORD=password
       - LOCAL=true
       - LDAP_HOST=0.0.0.0
