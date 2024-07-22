@@ -22,7 +22,7 @@ module "container" {
       value = "389"
     },
     {
-      name  = "LDAP_RBAC_VERSION"
+      name      = "LDAP_RBAC_VERSION"
       valueFrom = data.aws_ssm_parameter.ldap_rbac_version.arn
     }
   ]
