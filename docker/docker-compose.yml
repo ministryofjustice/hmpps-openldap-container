@@ -7,6 +7,7 @@ services:
       - LOCAL=true
       - LDAP_HOST=0.0.0.0
       - LDAP_PORT=389
+      - LDAP_RBAC_VERSION=6.0.3
     ports:
       - "389:389/tcp"
       - "389:389/udp"
