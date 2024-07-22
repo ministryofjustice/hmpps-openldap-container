@@ -6,7 +6,7 @@ echo $SLAPD_LOG_LEVEL
 IP=$LDAP_HOST
 
 echo "setting RBAC tag..."
-RBAC_TAG="master"
+RBAC_TAG="$LDAP_RBAC_VERSION"
 
 echo "Cloning rbac repo..."
 # clone rbac repo

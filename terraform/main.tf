@@ -20,6 +20,10 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "389"
+    },
+    {
+      name  = "LDAP_RBAC_VERSION"
+      valueFrom = data.aws_ssm_parameter.ldap_rbac_version.arn
     }
   ]
   secrets = [
