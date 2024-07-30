@@ -22,8 +22,8 @@ module "container" {
       value = "389"
     },
     {
-      name  = "LDAP_RBAC_VERSION"
-      value = data.aws_ssm_parameter.ldap_rbac_version.value
+      name  = "DELIUS_ENVIRONMENT"
+      value = "${var.namespace}-${var.environment}"
     }
   ]
   secrets = [
