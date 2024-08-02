@@ -7,6 +7,7 @@ IP=$LDAP_HOST
 
 echo "setting RBAC tag..."
 RBAC_TAG=$(aws ssm get-parameters --name "/$DELIUS_ENVIRONMENT/LDAP_RBAC_VERSION" --region eu-west-2 --query "Parameter.Value" --output text)
+echo "RBAC tag is $RBAC_TAG"
 
 echo "Cloning rbac repo..."
 # clone rbac repo
