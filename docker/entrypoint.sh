@@ -5,6 +5,14 @@ echo $SLAPD_LOG_LEVEL
 
 IP=$LDAP_HOST
 
+echo "RBAC tag is $RBAC_TAG"
+
+echo "Cloning rbac repo..."
+# clone rbac repo
+git clone --depth 1 --branch ${RBAC_TAG} https://github.com/ministryofjustice/hmpps-ndelius-rbac.git /rbac && apk del git && chown -R ldap:ldap /rbac
+
+echo "rbac repo cloned"
+
 # Hash the bind password
 HASHED_BIND_PASSWORD=$(slappasswd -h {SSHA} -s $BIND_PASSWORD)
 # Replace the bind password in the bootstrap ldif files

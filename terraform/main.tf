@@ -3,7 +3,7 @@ locals {
 }
 
 module "container" {
-  source                   = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//container?ref=v4.2.0"
+  source                   = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//container?ref=v4.3.0"
   name                     = local.app_name
   image                    = "374269020027.dkr.ecr.${data.aws_region.current.name}.amazonaws.com/${var.namespace}-${local.app_name}-ecr-repo:${var.image_tag}"
   essential                = true
@@ -20,6 +20,10 @@ module "container" {
     {
       name  = "LDAP_PORT"
       value = "389"
+    },
+    {
+      name  = "DELIUS_ENVIRONMENT"
+      value = "${var.namespace}-${var.environment}"
     }
   ]
   secrets = [
@@ -30,6 +34,10 @@ module "container" {
     {
       name      = "MIGRATION_S3_LOCATION"
       valueFrom = data.aws_ssm_parameter.seed_uri.arn
+    },
+    {
+      name      = "RBAC_TAG"
+      valueFrom = data.aws_ssm_parameter.ldap_rbac_version.arn
     }
   ]
   mount_points = [{
@@ -67,7 +75,7 @@ module "container" {
 }
 
 module "deploy" {
-  source                = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=v4.2.0"
+  source                = "git::https://github.com/ministryofjustice/modernisation-platform-terraform-ecs-cluster//service?ref=v4.3.0"
   container_definitions = module.container.json_encoded_list
   cluster_arn           = "arn:aws:ecs:eu-west-2:${data.aws_caller_identity.current.id}:cluster/${var.namespace}-${var.environment}-cluster"
   name                  = local.app_name
