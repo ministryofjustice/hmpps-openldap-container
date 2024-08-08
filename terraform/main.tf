@@ -34,6 +34,10 @@ module "container" {
     {
       name      = "MIGRATION_S3_LOCATION"
       valueFrom = data.aws_ssm_parameter.seed_uri.arn
+    },
+    {
+      name      = "RBAC_TAG"
+      valueFrom = data.aws_ssm_parameter.ldap_rbac_version.arn
     }
   ]
   mount_points = [{
