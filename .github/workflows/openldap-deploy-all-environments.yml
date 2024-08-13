@@ -15,9 +15,9 @@ jobs:
       matrix:
         include:
           - environment: dev
-            image_tag: 0.80.0
+            image_tag: 6.0.3-latest
           - environment: test
-            image_tag: 0.80.0
+            image_tag: 6.0.3-latest
     with:
       environment: ${{ matrix.environment }}
       image_tag: ${{ matrix.image_tag }}
