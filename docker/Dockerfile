@@ -1,7 +1,7 @@
 # to do: pin to version
 FROM alpine:3.17
 
-RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients openldap-overlay-memberof openldap-overlay-ppolicy openldap-overlay-refint bash ca-certificates curl jq git aws-cli
+RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients openldap-overlay-memberof openldap-overlay-ppolicy openldap-overlay-refint bash ca-certificates curl jq git aws-cli coreutils gzip
 
 RUN install -m 755 -d -o ldap -g ldap /etc/openldap/slapd.d && install -m 755 -o ldap -g ldap -d /var/lib/openldap/run && install -m 750 -o ldap -g ldap -d /var/lib/openldap/openldap-data
 
