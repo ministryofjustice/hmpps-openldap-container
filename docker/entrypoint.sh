@@ -82,8 +82,24 @@ if [ "$LDAP_EMPTY" == "true" ]; then
         exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
     else
         echo "Loading backup ldif file from s3"
-        if aws s3 cp ${MIGRATION_S3_LOCATION} /seed.ldif; then
+        mkdir /tmp/seed
+        if aws s3 cp ${MIGRATION_S3_LOCATION} /tmp/seed/$(basename "$MIGRATION_S3_LOCATION"); then
             echo "S3 pull succeeded"
+            if [ -f /tmp/seed/$(basename "$MIGRATION_S3_LOCATION") ]; then
+                # if file ends in gz, unzip it
+                if [[ /tmp/seed/$(basename "$MIGRATION_S3_LOCATION") == *.gz ]]; then
+                    echo "Extracting seed ldif file"
+                    gunzip -c /tmp/seed/$(basename "$MIGRATION_S3_LOCATION") > /seed.ldif
+                    echo "Extracted seed ldif file to /seed.ldif"
+                else
+                    echo "Seed ldif file not gzipped"
+                    mv /tmp/seed/$(basename "$MIGRATION_S3_LOCATION") /seed.ldif
+                    echo "Moved seed ldif file to /seed.ldif"
+                fi
+            else
+                echo "Extracted seed ldif file not found"
+                exit 1
+            fi
 
             echo "Adding seed ldif to ldap tree"
             slapadd -v -n 2 -F /etc/openldap/slapd.d -l /seed.ldif
