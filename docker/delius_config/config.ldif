@@ -1,4 +1,4 @@
 dn: cn=config
 changetype: modify
 replace: olcThreads
-olcThreads: 16
+olcThreads: 32

@@ -13,7 +13,7 @@ olcAccess: {0}to *
   by * read
 olcRootDN: cn=root,dc=moj,dc=com
 olcRootPW: HASHEDPASSWORD
-olcTimeLimit: time.soft=60 time.hard=600
+olcTimeLimit: time.soft=30 time.hard=30
 olcSizeLimit: size.soft=5000 size.hard=unlimited
 olcDbIndex: ou,cn,mail,surname,givenName eq,pres,sub
 olcDbIndex: objectClass,uniqueMember,uid,member,entryUUID eq,pres
