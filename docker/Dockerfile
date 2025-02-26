@@ -1,5 +1,5 @@
 # to do: pin to version
-FROM alpine:3.17
+FROM alpine:3.21
 
 RUN apk add --update --no-cache openldap openldap-back-mdb openldap-back-monitor openldap-clients openldap-overlay-memberof openldap-overlay-ppolicy openldap-overlay-refint bash ca-certificates curl jq git aws-cli coreutils gzip
 
