@@ -13,3 +13,4 @@ services:
     volumes:
       - ./mdb:/var/lib/openldap/openldap-data/
       - ./local_seed.ldif:/local_seed.ldif
+      - ./scripts:/scripts
