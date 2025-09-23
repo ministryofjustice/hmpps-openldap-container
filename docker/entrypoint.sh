@@ -119,3 +119,21 @@ else
         # Replace this shell session with slapd so that it is PID 1
     exec slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL
 fi
+
+### Warm up cache ###
+# query to get all user entries into cache
+
+echo "Warming up LDAP cache..."
+echo "Querying all users..."
+time -f "Time: %Us" ldapsearch -D 'cn=root,dc=moj,dc=com' -w $BIND_PASSWORD -LLL -H ldap:// -b 'ou=users,dc=moj,dc=com' '+' '*' > /dev/null
+echo "Querying all objects..."
+time -f "Time: %Us" ldapsearch -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
+
+echo "Querying Roles/Associations for all users..."
+time -f "Time: %Us" bash -c '
+for user in $(ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b "dc=moj,dc=com" "(objectClass=person)" dn | grep "^dn:" | sed -n "s/^dn: //p"); do
+  ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b ${user} -s one -a always "(|(objectClass=NDRole)(objectClass=NDRoleAssociation))" > /dev/null
+done
+'
+
+echo "Cache warmed up successfully."
