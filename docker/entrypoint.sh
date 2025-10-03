@@ -4,13 +4,13 @@ set -e
 warmup_ldap_cache() {
     echo "Warming up LDAP cache..."
     echo "(1/3) Querying all users..."
-    time -f "Time: %Us" ldapsearch -D 'cn=root,dc=moj,dc=com' -w $BIND_PASSWORD -LLL -H ldap:// -b 'ou=users,dc=moj,dc=com' '+' '*' > /dev/null
+    /usr/bin/time -f "Time: %Us" ldapsearch -D 'cn=root,dc=moj,dc=com' -w $BIND_PASSWORD -LLL -H ldap:// -b 'ou=users,dc=moj,dc=com' '+' '*' > /dev/null
 
     echo "(2/3) Querying all objects..."
-    time -f "Time: %Us" ldapsearch -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
+    /usr/bin/time -f "Time: %Us" ldapsearch -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
 
     echo "(3/3) Querying Roles/Associations for all users..."
-    time -f "Time: %Us" bash -c '
+    /usr/bin/time -f "Time: %Us" bash -c '
     for user in $(ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b "dc=moj,dc=com" "(objectClass=person)" dn | grep "^dn:" | sed -n "s/^dn: //p"); do
     ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b ${user} -s one -a always "(|(objectClass=NDRole)(objectClass=NDRoleAssociation))" > /dev/null
     done
