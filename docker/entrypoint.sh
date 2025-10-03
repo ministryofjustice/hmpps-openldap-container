@@ -21,7 +21,7 @@ warmup_ldap_cache() {
 
 start_sladp() {
     slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL &
-    SLAPD_PID=$(/var/run/openldap/slapd.pid)
+    SLAPD_PID=$(cat /var/run/openldap/slapd.pid)
 
     echo "Waiting for OpenLDAP to start"
     while true; do
