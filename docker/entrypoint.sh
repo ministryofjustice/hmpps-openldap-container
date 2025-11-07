@@ -18,6 +18,9 @@ warmup_ldap_cache() {
     ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" -a never | grep -c ^dn:
 
     echo "Cache warmed up successfully."
+
+    echo "Marking container as ready."
+    touch /tmp/ready
 }
 
 start_slapd() {
