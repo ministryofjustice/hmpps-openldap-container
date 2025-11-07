@@ -3,23 +3,24 @@ set -e
 ### Warm up cache ###
 warmup_ldap_cache() {
     echo "Warming up LDAP cache..."
-    echo "(1/3) Querying all users..."
-    /usr/bin/time -f "Time: %Us" ldapsearch -D 'cn=root,dc=moj,dc=com' -w $BIND_PASSWORD -LLL -H ldap:// -b 'ou=users,dc=moj,dc=com' '+' '*' > /dev/null
+    echo "(1/4) Querying all users..."
+    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "ou=users,dc=moj,dc=com" '+' '*' > /dev/null
 
-    echo "(2/3) Querying all objects..."
-    /usr/bin/time -f "Time: %Us" ldapsearch -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
+    echo "(2/4) Querying all objects..."
+    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
 
-    echo "(3/3) Querying Roles/Associations for all users..."
-    /usr/bin/time -f "Time: %Us" bash -c '
-    for user in $(ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b "dc=moj,dc=com" "(objectClass=person)" dn | grep "^dn:" | sed -n "s/^dn: //p"); do
-    ldapsearch -x -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -LLL -b ${user} -s one -a always "(|(objectClass=NDRole)(objectClass=NDRoleAssociation))" > /dev/null
-    done
-    '
+    echo "(3/4) Querying Roles/Associations for all users..."
+    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "ou=users,dc=moj,dc=com" '(|(objectClass=NDRole)(objectClass=NDRoleAssociation))' '+' '*' > /dev/null
+
+    echo "(4/4) Running some derefencing queries..."
+    ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" | grep -c ^dn:
+    ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" -a always | grep -c ^dn:
+    ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" -a never | grep -c ^dn:
 
     echo "Cache warmed up successfully."
 }
 
-start_sladp() {
+start_slapd() {
     slapd -F /etc/openldap/slapd.d -h "ldap://${IP}:${LDAP_PORT}/ ldapi://%2Fvar%2Flib%2Fopenldap%2Frun%2Fldapi" -d $SLAPD_LOG_LEVEL &
 
     echo "Waiting for OpenLDAP to start"
@@ -113,7 +114,7 @@ if [ "$LDAP_EMPTY" == "true" ]; then
         echo "Adding seed ldif to ldap tree"
         slapadd -n 2 -F /etc/openldap/slapd.d -l /local_seed.ldif
         echo "Starting slapd with seeded data"
-        start_sladp
+        start_slapd
     else
         echo "Loading backup ldif file from s3"
         mkdir /tmp/seed
@@ -138,7 +139,7 @@ if [ "$LDAP_EMPTY" == "true" ]; then
             echo "Adding seed ldif to ldap tree"
             slapadd -v -n 2 -F /etc/openldap/slapd.d -l /seed.ldif
             echo "Starting slapd with seeded data"
-            start_sladp
+            start_slapd
         else
             echo "S3 pull failed"
             echo "Remove mdb open-ldap data directory to reseed data"
@@ -148,5 +149,5 @@ if [ "$LDAP_EMPTY" == "true" ]; then
 else
     echo "LDAP data directory contains an mdb file. Did not seed data." 
     echo "Please verify this data is correct"
-    start_sladp
+    start_slapd
 fi
