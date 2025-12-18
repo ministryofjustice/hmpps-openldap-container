@@ -18,11 +18,7 @@ warmup_ldap_cache() {
     ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" -a never | grep -c ^dn:
 
     echo "Cache warmed up successfully."
-    echo "10 minutes sleep break initialising...."
-    sleep 600 # 10 minutes to test draining vs traffic from NLB
-    echo "10 minutes sleep break completed...."
     echo "Marking container as ready."
-    touch /tmp/ready
 }
 
 start_slapd() {
