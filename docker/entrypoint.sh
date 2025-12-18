@@ -4,13 +4,13 @@ set -e
 warmup_ldap_cache() {
     echo "Warming up LDAP cache..."
     echo "(1/4) Querying all users..."
-    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "ou=users,dc=moj,dc=com" '+' '*' > /dev/null
+    ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '+' '*' > /dev/null
 
     echo "(2/4) Querying all objects..."
-    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
+    ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
 
     echo "(3/4) Querying Roles/Associations for all users..."
-    ldapsearch -x -H ldap://localhost -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -b "ou=users,dc=moj,dc=com" '(|(objectClass=NDRole)(objectClass=NDRoleAssociation))' '+' '*' > /dev/null
+    ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '(|(objectClass=NDRole)(objectClass=NDRoleAssociation))' '+' '*' > /dev/null
 
     echo "(4/4) Running some derefencing queries..."
     ldapsearch -H ldapi:// -Y EXTERNAL -Q -LLL -b "ou=Groups,dc=moj,dc=com" | grep -c ^dn:
