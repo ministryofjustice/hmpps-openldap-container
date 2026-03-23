@@ -41,7 +41,7 @@ jobs:
     if: (github.event_name == 'pull_request') || github.event.ref == 'refs/heads/main'
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -83,7 +83,7 @@ jobs:
     environment: delius-core-${{ inputs.environment }}
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Configure AWS Credentials
