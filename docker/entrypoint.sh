@@ -18,7 +18,7 @@ warmup_ldap_cache() {
 
         local start_time=$(date +%s)
 
-        "$@"
+        "$@" >/dev/null
         local rc=$?
 
         local end_time=$(date +%s)
@@ -37,11 +37,11 @@ warmup_ldap_cache() {
     local overall_start=$(date +%s)
     log "Beginning LDAP cache warm-up..."
 
-    run_step 1 "Querying all users" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '+' '*' > /dev/null
+    run_step 1 "Querying all users" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '+' '*'
 
-    run_step 2 "Querying all objects" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail > /dev/null
+    run_step 2 "Querying all objects" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "dc=moj,dc=com" "(objectClass=*)" uid cn mail
 
-    run_step 3 "Querying Roles/Associations for all users" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '(|(objectClass=NDRole)(objectClass=NDRoleAssociation))' '+' '*' > /dev/null
+    run_step 3 "Querying Roles/Associations for all users" ldapsearch -x -LLL -D "cn=root,dc=moj,dc=com" -w $BIND_PASSWORD -H ldap:// -b "ou=users,dc=moj,dc=com" '(|(objectClass=NDRole)(objectClass=NDRoleAssociation))' '+' '*'
 
     log "(4/4) START - Running dereferencing queries"
 
